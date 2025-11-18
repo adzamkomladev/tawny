@@ -8,6 +8,25 @@ export default defineNuxtConfig({
     '@nuxt/hints',
     '@nuxt/icon',
     '@nuxt/image',
-    '@nuxt/scripts'
-  ]
+    '@nuxt/scripts',
+    '@nuxthub/core'
+  ],
+  nitro: {
+    experimental: {
+      websocket: true
+    }
+  },
+  hub: {
+    cache: true,
+    kv: true,
+    blob: true,
+    workers: true,
+
+    bindings: {
+      observability: {
+        logs: true,
+      },
+    },
+
+  },
 })
