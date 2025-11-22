@@ -54,4 +54,11 @@ export default defineNuxtConfig({
     },
 
   },
+
+  routeRules: {
+    "/affiliate/**": { ssr: false },
+    "/admin/**": { ssr: false },
+
+    "/home": { ssr: false }
+  },
 })
