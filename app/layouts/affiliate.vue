@@ -20,7 +20,9 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from '@/components/ui/sidebar'
-import AppSidebar from '~/components/layouts/affiliate/AppSidebar.vue'
+import AppSidebar from '~/components/layouts/affiliate/AppSidebar.vue';
+
+const { breadcrumbs } = useBreadcrumb();
 </script>
 
 <template>
@@ -34,15 +36,21 @@ import AppSidebar from '~/components/layouts/affiliate/AppSidebar.vue'
           <Separator orientation="vertical" class="mr-2 data-[orientation=vertical]:h-4" />
           <Breadcrumb>
             <BreadcrumbList>
-              <BreadcrumbItem class="hidden md:block">
-                <BreadcrumbLink href="#">
-                  Building Your Application
-                </BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator class="hidden md:block" />
-              <BreadcrumbItem>
-                <BreadcrumbPage>Data Fetching</BreadcrumbPage>
-              </BreadcrumbItem>
+              <template v-for="(item, index) in breadcrumbs" :key="index">
+                <template v-if="index < breadcrumbs.length - 1">
+                  <BreadcrumbItem class="hidden md:block">
+                    <BreadcrumbLink as-child>
+                      <NuxtLink :to="item.url">{{ item.text }}</NuxtLink>
+                    </BreadcrumbLink>
+                  </BreadcrumbItem>
+                  <BreadcrumbSeparator class="hidden md:block" />
+                </template>
+                <template v-else>
+                  <BreadcrumbItem>
+                    <BreadcrumbPage>{{ item.text }}</BreadcrumbPage>
+                  </BreadcrumbItem>
+                </template>
+              </template>
             </BreadcrumbList>
           </Breadcrumb>
         </div>

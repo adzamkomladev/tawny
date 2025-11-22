@@ -18,7 +18,7 @@ defineProps<{
 
 <template>
   <SidebarGroup class="group-data-[collapsible=icon]:hidden">
-    <SidebarGroupLabel>Projects</SidebarGroupLabel>
+    <SidebarGroupLabel>Platform</SidebarGroupLabel>
     <SidebarMenu>
       <SidebarMenuItem v-for="item in platforms" :key="item.title">
         <SidebarMenuButton as-child>

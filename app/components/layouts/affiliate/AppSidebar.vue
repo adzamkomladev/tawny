@@ -1,46 +1,30 @@
 <script setup lang="ts">
-import type { SidebarProps } from '@/components/ui/sidebar'
-
-import {
-  AudioWaveform,
-  BookOpen,
-  Bot,
-  Command,
-  Frame,
-  GalleryVerticalEnd,
-  Map,
-  PieChart,
-  Settings2,
-  SquareTerminal,
-} from "lucide-vue-next"
-import NavMain from '~/components/layouts/affiliate/NavMain.vue'
-import NavProjects from '~/components/layouts/affiliate/NavProjects.vue'
-import NavUser from '~/components/layouts/affiliate/NavUser.vue'
-import TeamSwitcher from '~/components/layouts/affiliate/TeamSwitcher.vue'
-
+import type { SidebarProps } from '@/components/ui/sidebar';
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
   SidebarRail,
-} from '@/components/ui/sidebar'
+  SidebarMenu,
+  SidebarMenuItem,
+  SidebarMenuButton,
+  SidebarGroup,
+} from '@/components/ui/sidebar';
+
+import NavEvent from '~/components/layouts/affiliate/NavEvent.vue';
+import NavTeam from '~/components/layouts/affiliate/NavTeam.vue';
+import NavPlatform from '~/components/layouts/affiliate/NavPlatform.vue';
+import NavUser from '~/components/layouts/affiliate/NavUser.vue';
+import TeamSwitcher from '~/components/layouts/affiliate/TeamSwitcher.vue';
+
 
 const props = withDefaults(defineProps<SidebarProps>(), {
   collapsible: "icon",
 });
 
 const { affiliateNavLinks, teams } = useNav();
-
-
-// This is sample data.
-const data = {
-  user: {
-    name: "Daniel Boakye",
-    email: "daniel.boakye@yopmail.com",
-    avatar: "https://ui-avatars.com/api/?name=Daniel+Boakye",
-  }
-}
+const { user } = useAuth();
 </script>
 
 <template>
@@ -49,11 +33,24 @@ const data = {
       <TeamSwitcher :teams="[...teams]" />
     </SidebarHeader>
     <SidebarContent>
-      <NavMain :items="[...affiliateNavLinks.events]" />
-      <NavProjects :platforms="[...affiliateNavLinks.platform]" />
+      <SidebarGroup>
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton as-child tooltip="Home">
+              <NuxtLink to="/affiliate/home" class="flex items-center">
+                <Icon name="lucide:home" />
+                <span>Home</span>
+              </NuxtLink>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarGroup>
+      <NavEvent :items="[...affiliateNavLinks.event]" />
+      <NavTeam :items="[...affiliateNavLinks.team]" />
+      <NavPlatform :platforms="[...affiliateNavLinks.platform]" />
     </SidebarContent>
     <SidebarFooter>
-      <NavUser :user="data.user" />
+      <NavUser :user="user" />
     </SidebarFooter>
     <SidebarRail />
   </Sidebar>

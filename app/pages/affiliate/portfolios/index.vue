@@ -12,12 +12,10 @@ import {
 definePageMeta({
   layout: 'affiliate'
 });
-
 useBreadcrumb().setBreadcrumbs([
   { text: 'Home', url: '/affiliate/home' },
+  { text: 'Portfolios', url: '/affiliate/portfolios' },
 ]);
-
-
 const team = null;
 </script>
 

@@ -1,28 +1,5 @@
 
 const navLinks = {
-  affiliate: {
-    events: [
-      { title: "New Event", icon: "calendar-plus", isActive: false, url: "/affiliate/events" },
-      {
-        title: "Votes", icon: "vote", isActive: true, url: "/affiliate/votes", items: [
-          { title: "Dashboard", url: "/affiliate/votes" },
-          { title: "Payments", url: "/affiliate/votes/payments" },
-        ]
-      },
-      {
-        title: "Tickets", icon: "ticket", isActive: false, url: "/affiliate/tickets", items: [
-          { title: "Dashboard", url: "/affiliate/tickets" },
-          { title: "Sales", url: "/affiliate/tickets/sales" },
-        ]
-      },
-      { title: "Event Settings", icon: "settings", isActive: false, url: "/affiliate/events/settings" },
-    ],
-    platform: [
-      { title: "Earnings", icon: "coins", isActive: false, url: "/affiliate/earnings" },
-      { title: "Portfolio", icon: "briefcase-business", isActive: false, url: "/affiliate/portfolio" },
-      { title: "Settings", icon: "settings", isActive: false, url: "/affiliate/settings" },
-    ]
-  },
   admin: {
     management: [
       { title: "User Management", icon: "users", isActive: false, url: "/admin/users" },
@@ -47,8 +24,48 @@ const navLinks = {
 };
 
 export const useNav = () => {
+  const eventId = '123';
+  const teamId = '456';
+
+  const affiliateNavLinks = computed(() => ({
+    event: !eventId
+      ? [
+        ...(
+          !teamId
+            ? []
+            : [{ title: "New", icon: "calendar-plus", isActive: false, url: "/affiliate/events/new" }]
+        ),
+      ]
+      : [
+        { title: "Overview", icon: "calendar-range", isActive: true, url: `/affiliate/events/${eventId}` },
+        { title: "New", icon: "calendar-plus", isActive: false, url: "/affiliate/events/new" },
+        {
+          title: "Votes", icon: "vote", isActive: false, url: `/affiliate/events/${eventId}/votes`, items: [
+            { title: "Overview", url: `/affiliate/events/${eventId}/votes` },
+            { title: "Payments", url: `/affiliate/events/${eventId}/votes/payments` },
+          ]
+        },
+        {
+          title: "Tickets", icon: "ticket", isActive: false, url: `/affiliate/events/${eventId}/tickets`, items: [
+            { title: "Overview", url: `/affiliate/events/${eventId}/tickets` },
+            { title: "Sales", url: `/affiliate/events/${eventId}/tickets/sales` },
+          ]
+        },
+        { title: "Settings", icon: "calendar-cog", isActive: false, url: `/affiliate/events/${eventId}/settings` },
+      ],
+    team: !teamId ? [] : [
+      { title: "Overview", icon: "users", isActive: false, url: `/affiliate/teams/${teamId}` },
+      { title: "Settings", icon: "user-cog", isActive: false, url: `/affiliate/teams/${teamId}/settings` },
+    ],
+    platform: [
+      { title: "Earnings", icon: "coins", isActive: false, url: "/affiliate/earnings" },
+      { title: "Portfolio", icon: "briefcase-business", isActive: false, url: "/affiliate/portfolios" },
+      { title: "Settings", icon: "settings-2", isActive: false, url: "/affiliate/settings" },
+    ]
+  }));
+
   return {
-    affiliateNavLinks: navLinks.affiliate,
+    affiliateNavLinks,
     adminNavLinks: readonly(navLinks.admin),
     clientNavLinks: readonly(navLinks.client),
     teams: readonly([
