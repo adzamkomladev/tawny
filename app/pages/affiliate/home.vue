@@ -13,6 +13,10 @@ definePageMeta({
   layout: 'affiliate'
 });
 
+useHead({
+  title: 'Home'
+});
+
 useBreadcrumb().setBreadcrumbs([
   { text: 'Home', url: '/affiliate/home' },
 ]);

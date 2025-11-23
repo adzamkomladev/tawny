@@ -5,6 +5,10 @@ definePageMeta({
   layout: 'affiliate'
 });
 
+useHead({
+  title: 'New Team'
+});
+
 useBreadcrumb().setBreadcrumbs([
   { text: 'Home', url: '/affiliate/home' },
   { text: 'New Team', url: `/affiliate/teams/new` },
