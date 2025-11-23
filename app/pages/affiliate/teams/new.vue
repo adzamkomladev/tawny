@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import NewTeamForm from '@/components/affiliate/teams/new/Form.vue';
+
 definePageMeta({
   layout: 'affiliate'
 });
@@ -10,12 +12,14 @@ useBreadcrumb().setBreadcrumbs([
 </script>
 
 <template>
-  <div class="flex flex-1 flex-col gap-4 p-4 pt-0">
-    <div class="grid auto-rows-min gap-4 md:grid-cols-3">
-      <div class="bg-muted/50 aspect-video rounded-xl" />
-      <div class="bg-muted/50 aspect-video rounded-xl" />
-      <div class="bg-muted/50 aspect-video rounded-xl" />
+  <div class="mx-auto max-w-3xl flex-1 space-y-8 p-8 pt-6">
+    <div class="space-y-2">
+      <h1 class="text-3xl font-bold tracking-tight text-foreground">Team details</h1>
+      <p class="text-muted-foreground">
+        This information shows up anywhere your ticketing, payments, or live voting modules mention the team.
+      </p>
     </div>
-    <div class="bg-muted/50 min-h-screen flex-1 rounded-xl md:min-h-min" />
+
+    <NewTeamForm />
   </div>
 </template>
