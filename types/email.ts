@@ -1,0 +1,4 @@
+export enum EmailTemplate {
+    EMAIL_VERIFICATION = "4455",
+    AFFILIATE_VERIFICATION = "4461"
+}

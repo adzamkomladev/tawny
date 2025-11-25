@@ -14,6 +14,7 @@ export const authClient = createAuthClient({
 export const {
     useSession,
     getSession,
+    sendVerificationEmail,
     signIn,
     signUp,
     signOut

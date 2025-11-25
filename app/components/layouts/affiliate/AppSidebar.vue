@@ -50,7 +50,7 @@ const { user } = useAuth();
       <NavPlatform :platforms="[...affiliateNavLinks.platform]" />
     </SidebarContent>
     <SidebarFooter>
-      <NavUser :user="user" />
+      <NavUser :user="user!" />
     </SidebarFooter>
     <SidebarRail />
   </Sidebar>

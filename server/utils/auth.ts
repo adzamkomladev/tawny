@@ -1,7 +1,9 @@
 import type { EventHandlerRequest, H3Event } from "h3";
 import { betterAuth, BetterAuthOptions } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
+import { EmailTemplate } from "~~/types/email";
 import { useWsDb, tables } from "./db";
+import { sendTemplatedEmail } from "./email";
 
 const options = {
   session: {
@@ -11,8 +13,18 @@ const options = {
     },
   },
   emailAndPassword: {
-    enabled: true,
-  }, 
+    enabled: true
+  },
+  emailVerification: {
+    sendVerificationEmail: async ({ user, url, token }, request) => {
+      await sendTemplatedEmail(
+        { name: user.name || "User", email: user.email },
+        "Verify your email address",
+        EmailTemplate.EMAIL_VERIFICATION,
+        { name: user.name || "User", verificationLink: url }
+      );
+    },
+  },
   socialProviders: {
     google: {
       clientId: process.env.GOOGLE_CLIENT_ID as string,

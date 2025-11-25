@@ -3,6 +3,7 @@ import {
   Field,
   FieldDescription,
 } from "@/components/ui/field";
+import { toast } from "vue-sonner";
 
 definePageMeta({
   layout: 'auth'
@@ -11,6 +12,27 @@ definePageMeta({
 useHead({
   title: 'Email Verification'
 });
+
+const { user } = useAuth();
+
+const sendEmail = async () => {
+  const { error } = await sendVerificationEmail({
+    email: user.value?.email || '',
+    callbackURL: '/onboarding'
+  });
+
+  if (error) {
+    toast.error('Failed to send verification email', {
+      description: error.message,
+    });
+    return;
+  }
+
+  toast.success('Verification email sent', {
+    description: 'Please check your inbox.',
+  });
+}
+
 </script>
 
 <template>
@@ -28,7 +50,10 @@ useHead({
 
     <Field>
       <FieldDescription class="px-6 text-center">
-        Didn't receive the link? <NuxtLink to="/email/verify">Resend</NuxtLink>
+        Didn't receive the link?
+        <Button class="cursor-pointer text-muted-foreground p-0 " variant="link" @click="sendEmail">
+          Resend
+        </Button>
       </FieldDescription>
     </Field>
   </div>
