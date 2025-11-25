@@ -61,5 +61,6 @@ export default defineNuxtConfig({
     "/home": { ssr: false },
     "/password/**": { ssr: false },
     "/email/**": { ssr: false },
+    "/onboarding/**": { ssr: false },
   },
 })
