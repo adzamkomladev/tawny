@@ -4,7 +4,7 @@ import {
   FieldDescription,
   FieldSeparator,
 } from "@/components/ui/field";
-import AffiliateForm from "@/components/onboarding/affiliate/Form.vue";
+import AffiliateForm from "~/components/onboarding/AffiliateForm.vue";
 
 definePageMeta({
   layout: 'onboarding'

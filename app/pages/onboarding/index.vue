@@ -4,7 +4,7 @@ import {
   FieldDescription,
   FieldSeparator,
 } from "@/components/ui/field";
-import Form from "@/components/onboarding/index/Form.vue";
+import Form from "~/components/onboarding/RoleForm.vue";
 
 definePageMeta({
   layout: 'onboarding'

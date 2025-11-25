@@ -2,7 +2,7 @@
 import {
   FieldDescription,
 } from "@/components/ui/field";
-import TeamForm from "@/components/onboarding/team/Form.vue";
+import TeamForm from "~/components/onboarding/TeamForm.vue";
 
 definePageMeta({
   layout: 'onboarding'
