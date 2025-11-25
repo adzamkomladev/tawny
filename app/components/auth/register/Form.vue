@@ -1,26 +1,50 @@
 <script lang="ts" setup>
-import type { HTMLAttributes } from "vue"
+import { useForm } from "vee-validate";
+import { toTypedSchema } from "@vee-validate/zod";
+import { toast } from "vue-sonner";
 
-import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
-import {
-  Field,
-  FieldDescription,
-  FieldGroup,
-  FieldLabel,
-  FieldSeparator,
-} from "@/components/ui/field"
 import { Input } from "@/components/ui/input";
+import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 
-const props = defineProps<{
-  class?: HTMLAttributes["class"]
-}>();
+import { type RegisterForm, registerSchema } from "~~/schemas/auth";
 
+
+const form = useForm<RegisterForm>({
+  validationSchema: toTypedSchema(registerSchema),
+  initialValues: {
+    name: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
+  },
+});
+
+const { handleSubmit, values, setFieldValue, isSubmitting } = form;
+
+
+const onSubmit = handleSubmit(async (payload) => {
+  const { error } = await signUp.email({
+    name: payload.name,
+    email: payload.email,
+    password: payload.password,
+    image: `https://ui-avatars.com/api/?name=${encodeURIComponent(payload.name)}&background=random&size=128`,
+  });
+
+  if (error) {
+    toast.error('Registration failed', {
+      description: error.message,
+    });
+    return;
+  }
+
+  navigateTo('/email/verification');
+});
 </script>
 <template>
-  <form :class="cn('flex flex-col gap-6', props.class)">
+  <form class="flex flex-col gap-6" @submit.prevent="onSubmit">
     <FieldGroup>
-      
+
       <Field>
         <FieldLabel for="name">
           Full Name
@@ -58,7 +82,7 @@ const props = defineProps<{
           Create Account
         </Button>
       </Field>
-      
+
     </FieldGroup>
   </form>
 </template>

@@ -10,6 +10,9 @@ const options = {
       maxAge: 5 * 60, // Cache duration in seconds
     },
   },
+  emailAndPassword: {
+    enabled: true,
+  }, 
   socialProviders: {
     google: {
       clientId: process.env.GOOGLE_CLIENT_ID as string,
