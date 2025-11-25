@@ -1,20 +1,33 @@
-<script lang="ts" setup>
-import { Button } from "@/components/ui/button";
-useHead({
-    title: 'Welcome'
+<script setup lang="ts">
+definePageMeta({
+    layout: false,
+});
+
+useSeoMeta({
+    title: 'Tix4u - Create Unforgettable Events',
+    description:
+        'The all-in-one platform for ticketing, payments, and live voting. Launch your event in minutes with Tix4u.',
+    ogTitle: 'Tix4u - Create Unforgettable Events',
+    ogDescription:
+        'The all-in-one platform for ticketing, payments, and live voting. Launch your event in minutes.',
+    ogImage: '/img/og-image.png',
+    twitterCard: 'summary_large_image',
 });
 </script>
 
 <template>
-    <div>
-        <h3>Welcome everyone to our landing page. Let's get started below</h3>
-        <div>
-            <Button as-child>
-                <NuxtLink to="/register">Get Started</NuxtLink>
-            </Button>
-            <Button variant="outline" as-child>
-                <NuxtLink to="/login">Login</NuxtLink>
-            </Button>
-        </div>
+    <div class="min-h-screen bg-background">
+        <LandingNavbar />
+        <main>
+            <LandingHero />
+            <LandingPartners />
+            <LandingFeatures />
+            <LandingHowItWorks />
+            <LandingPricing />
+            <LandingTestimonials />
+            <LandingFAQ />
+            <LandingCTA />
+        </main>
+        <LandingFooter />
     </div>
 </template>
