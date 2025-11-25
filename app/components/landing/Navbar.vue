@@ -24,14 +24,12 @@ const navLinks = [
 </script>
 
 <template>
-  <header
-    :class="[
+  <header :class="[
       'fixed top-0 left-0 right-0 z-50 transition-all duration-300',
       isScrolled
         ? 'bg-background/80 backdrop-blur-lg border-b border-border shadow-sm'
         : 'bg-transparent',
-    ]"
-  >
+    ]">
     <nav class="container mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex h-16 items-center justify-between">
         <!-- Logo -->
@@ -41,12 +39,8 @@ const navLinks = [
 
         <!-- Desktop Navigation -->
         <div class="hidden md:flex items-center gap-8">
-          <a
-            v-for="link in navLinks"
-            :key="link.href"
-            :href="link.href"
-            class="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
-          >
+          <a v-for="link in navLinks" :key="link.href" :href="link.href"
+            class="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
             {{ link.label }}
           </a>
         </div>
@@ -59,7 +53,7 @@ const navLinks = [
           <Button as-child>
             <NuxtLink to="/register">
               Get Started
-              <Icon name="lucide:arrow-right" class="size-4" />
+              <Icon name="lucide:arrow-right" class="size-5" />
             </NuxtLink>
           </Button>
         </div>

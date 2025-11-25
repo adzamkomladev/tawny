@@ -16,12 +16,13 @@ useSeoMeta({
 </script>
 
 <template>
-    <div class="min-h-screen bg-background">
+    <div class="min-h-screen bg-white dark:bg-background">
         <LandingNavbar />
         <main>
             <LandingHero />
             <LandingPartners />
             <LandingFeatures />
+            <LandingEvents />
             <LandingHowItWorks />
             <LandingPricing />
             <LandingTestimonials />

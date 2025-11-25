@@ -17,13 +17,10 @@ const paymentPartners = [
 
       <!-- Logo Grid -->
       <div class="flex flex-wrap items-center justify-center gap-x-10 gap-y-6">
-        <div
-          v-for="partner in paymentPartners"
-          :key="partner.name"
-          class="flex items-center gap-2.5 text-muted-foreground/70 hover:text-foreground transition-colors px-4 py-2 rounded-lg hover:bg-muted/50"
-        >
-          <Icon :name="partner.icon" class="size-5" />
-          <span class="text-sm font-medium">{{ partner.name }}</span>
+        <div v-for="partner in paymentPartners" :key="partner.name"
+          class="flex items-center gap-3 text-muted-foreground/70 hover:text-foreground transition-colors px-5 py-2.5 rounded-lg hover:bg-muted/50">
+          <Icon :name="partner.icon" class="size-6" />
+          <span class="text-base font-medium">{{ partner.name }}</span>
         </div>
       </div>
     </div>

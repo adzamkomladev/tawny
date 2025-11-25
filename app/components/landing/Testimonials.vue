@@ -45,12 +45,9 @@ const testimonials = [
 
       <!-- Testimonials Grid -->
       <div class="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-        <Card
-          v-for="(testimonial, index) in testimonials"
-          :key="testimonial.author"
-          class="border-border/50 bg-background hover:shadow-lg hover:border-primary/30 transition-all duration-300 animate-on-scroll"
-          :style="{ animationDelay: `${150 + index * 100}ms` }"
-        >
+        <Card v-for="(testimonial, index) in testimonials" :key="testimonial.author"
+          class="border-border/50 bg-white dark:bg-background hover:shadow-lg hover:border-primary/30 transition-all duration-300 animate-on-scroll"
+          :style="{ animationDelay: `${150 + index * 100}ms` }">
           <CardContent class="p-6">
             <!-- Quote Icon -->
             <Icon name="lucide:quote" class="size-10 text-primary/30 mb-4" />
@@ -63,8 +60,7 @@ const testimonials = [
             <!-- Author -->
             <div class="flex items-center gap-3">
               <div
-                class="size-11 rounded-full bg-primary/10 flex items-center justify-center text-sm font-semibold text-primary"
-              >
+                class="size-11 rounded-full bg-primary/10 flex items-center justify-center text-sm font-semibold text-primary">
                 {{ testimonial.avatar }}
               </div>
               <div>

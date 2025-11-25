@@ -42,7 +42,7 @@ const features = [
 </script>
 
 <template>
-  <section id="features" class="py-24 sm:py-32 bg-muted/30">
+  <section id="features" class="py-24 sm:py-32 bg-muted/20">
     <div class="container mx-auto px-4 sm:px-6 lg:px-8">
       <!-- Section Header -->
       <div class="max-w-3xl mx-auto text-center mb-16 animate-on-scroll">
@@ -57,17 +57,13 @@ const features = [
 
       <!-- Features Grid -->
       <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        <Card
-          v-for="(feature, index) in features"
-          :key="feature.title"
-          class="group relative overflow-hidden border-border/50 bg-background/50 backdrop-blur-sm hover:border-primary/50 hover:shadow-lg hover:shadow-primary/5 transition-all duration-300 animate-on-scroll"
-          :style="{ animationDelay: `${index * 100}ms` }"
-        >
+        <Card v-for="(feature, index) in features" :key="feature.title"
+          class="group relative overflow-hidden border-border/50 bg-white dark:bg-background/50 backdrop-blur-sm hover:border-primary/50 hover:shadow-lg hover:shadow-primary/5 transition-all duration-300 animate-on-scroll"
+          :style="{ animationDelay: `${index * 100}ms` }">
           <CardContent class="p-6">
             <!-- Icon -->
             <div
-              class="size-14 rounded-xl bg-primary/10 flex items-center justify-center mb-4 group-hover:bg-primary/20 group-hover:scale-105 transition-all duration-300"
-            >
+              class="size-14 rounded-xl bg-primary/10 flex items-center justify-center mb-4 group-hover:bg-primary/20 group-hover:scale-105 transition-all duration-300">
               <Icon :name="feature.icon" class="size-7 text-primary" />
             </div>
 
@@ -79,8 +75,7 @@ const features = [
 
             <!-- Hover Gradient -->
             <div
-              class="absolute inset-0 bg-linear-to-br from-primary/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"
-            />
+              class="absolute inset-0 bg-linear-to-br from-primary/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
           </CardContent>
         </Card>
       </div>
