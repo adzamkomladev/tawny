@@ -13,7 +13,15 @@ const options = {
     },
   },
   emailAndPassword: {
-    enabled: true
+    enabled: true,
+    sendResetPassword: async ({ user, url, token }, request) => {
+      await sendTemplatedEmail(
+        { name: user.name || "User", email: user.email },
+        "Reset your password",
+        EmailTemplate.RESET_PASSWORD,
+        { name: user.name || "User", resetLink: url }
+      );
+    },
   },
   emailVerification: {
     sendVerificationEmail: async ({ user, url, token }, request) => {

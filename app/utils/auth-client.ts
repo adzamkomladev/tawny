@@ -15,6 +15,8 @@ export const {
     useSession,
     getSession,
     sendVerificationEmail,
+    requestPasswordReset,
+    resetPassword,
     signIn,
     signUp,
     signOut

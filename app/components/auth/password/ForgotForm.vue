@@ -1,36 +1,63 @@
 <script lang="ts" setup>
-import type { HTMLAttributes } from "vue"
+import { useForm } from "vee-validate";
+import { toTypedSchema } from "@vee-validate/zod";
+import { toast } from "vue-sonner";
 
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input";
 import {
   Field,
-  FieldDescription,
   FieldGroup,
   FieldLabel,
-} from "@/components/ui/field"
-import { Input } from "@/components/ui/input"
+} from "@/components/ui/field";
+import SubmitButton from "@/components/common/forms/SubmitButton.vue";
 
-const props = defineProps<{
-  class?: HTMLAttributes["class"]
-}>();
+import { type ForgotPasswordForm, forgotPasswordSchema } from "~~/schemas/auth";
+
+
+const { handleSubmit, defineField, errors, isSubmitting, meta } = useForm<ForgotPasswordForm>({
+  validationSchema: toTypedSchema(forgotPasswordSchema),
+  initialValues: {
+    email: '',
+  },
+});
+
+const [email, emailAttrs] = defineField('email');
+
+const onSubmit = handleSubmit(async (payload) => {
+  const { error } = await requestPasswordReset({
+    email: payload.email,
+    redirectTo: '/password/reset',
+  });
+
+  if (error) {
+    toast.error('Request failed!', {
+      description: error.message,
+    });
+    return;
+  }
+
+  toast.success('Reset link sent!', {
+    description: 'Please check your email for the password reset link.',
+  });
+});
 
 </script>
 <template>
-  <form :class="cn('flex flex-col gap-6', props.class)">
+  <form class="flex flex-col gap-6" @submit.prevent="onSubmit">
     <FieldGroup>
 
       <Field>
         <FieldLabel for="email">
           Email
         </FieldLabel>
-        <Input id="email" type="email" placeholder="m@example.com" required />
+        <Input v-model="email" v-bind="emailAttrs" id="email" type="email" placeholder="Eg. komla@example.com"
+          required />
+        <FieldError v-if="errors.email">{{ errors.email }}</FieldError>
       </Field>
 
       <Field>
-        <Button type="submit">
-          Send Reset Link
-        </Button>
+        <SubmitButton :disabled="isSubmitting || !meta.valid" class="cursor-pointer w-full" :loading="isSubmitting"
+          text="Send Reset Link" loading-text="Sending…" />
       </Field>
 
     </FieldGroup>
