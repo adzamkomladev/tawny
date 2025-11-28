@@ -6,7 +6,7 @@ import { EmailTemplate } from "~~/types/email";
 import { useWsDb, tables, useDb } from "./db";
 import { sendTemplatedEmail } from "./email";
 
-const config = useRuntimeConfig();
+// const config = useRuntimeConfig();
 
 const options = {
   session: {
@@ -42,7 +42,7 @@ const options = {
       clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
     },
   },
-  database: drizzleAdapter(config.mainEnv === 'prod' ? useDb() : useWsDb(), {
+  database: drizzleAdapter(useDb(), {
     provider: "pg", // or "pg" or "mysql"
     usePlural: true,
     schema: {
