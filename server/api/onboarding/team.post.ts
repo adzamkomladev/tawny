@@ -6,7 +6,7 @@ export default defineEventHandler(async (event) => {
   const { name, slug, description } = await readValidatedBody(event, onboardingTeamSchema.parse);
 
   try {
-    const db = useWsDb();
+    const db = useDb();
     const teamWithSlug = await db.query.teams.findFirst({
       where: (teams, { eq }) => eq(teams.slug, slug),
       columns: { id: true, slug: true },

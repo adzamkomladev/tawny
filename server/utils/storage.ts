@@ -1,6 +1,6 @@
 import { eq, inArray } from "drizzle-orm";
 import { AwsClient } from "aws4fetch";
-import { tables, useHttpDb } from "./db";
+import { tables, useDb } from "./db";
 
 // ============================================================================
 // Types
@@ -101,7 +101,7 @@ function generatePathname(filename: string, prefix: string): string {
  * Create an asset record in the database
  */
 async function createAssetRecord(options: CreateAssetRecordOptions): Promise<string> {
-  const db = useHttpDb();
+  const db = useDb();
   const [asset] = await db
     .insert(tables.assets)
     .values({
@@ -293,7 +293,7 @@ export async function confirmUpload(assetId: string): Promise<boolean> {
     if (!blobMeta) return false;
 
     // Update asset with actual size
-    const db = useHttpDb();
+    const db = useDb();
     await db
       .update(tables.assets)
       .set({ size: blobMeta.size.toString() })
@@ -356,7 +356,7 @@ export async function uploadAsset(
  * Get asset metadata by ID
  */
 export async function getAsset(assetId: string) {
-  const db = useHttpDb();
+  const db = useDb();
   const [asset] = await db
     .select()
     .from(tables.assets)
@@ -372,7 +372,7 @@ export async function getAsset(assetId: string) {
 export async function getAssets(assetIds: string[]) {
   if (assetIds.length === 0) return [];
 
-  const db = useHttpDb();
+  const db = useDb();
   const assets = await db
     .select()
     .from(tables.assets)
@@ -429,7 +429,7 @@ export async function serveAssetById(assetId: string, event: any) {
  * Delete an asset by ID from blob storage and database
  */
 export async function deleteAsset(assetId: string): Promise<boolean> {
-  const db = useHttpDb();
+  const db = useDb();
 
   // Get asset to find pathname
   const asset = await getAsset(assetId);
@@ -457,7 +457,7 @@ export async function listUserAssets(
   creatorId: string,
   options: SignedUrlOptions = {}
 ) {
-  const db = useHttpDb();
+  const db = useDb();
   const assets = await db
     .select()
     .from(tables.assets)

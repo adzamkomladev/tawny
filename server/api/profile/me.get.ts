@@ -14,7 +14,7 @@ export default defineEventHandler(async (event) => {
 });
 
 
-const retrieveTeam = async (db: ReturnType<typeof useWsDb>, userId: string) => {
+const retrieveTeam = async (db: ReturnType<typeof useDb>, userId: string) => {
   const teams = await db.query.teams.findMany({
     where: (teams, { eq, and, or }) => and(
       eq(teams.ownerId, userId),
@@ -53,7 +53,7 @@ const retrieveTeam = async (db: ReturnType<typeof useWsDb>, userId: string) => {
   })
 }
 
-const retrieveUser = async (db: ReturnType<typeof useWsDb>, userId: string) => {
+const retrieveUser = async (db: ReturnType<typeof useDb>, userId: string) => {
   const user = await db.query.users.findFirst({
     where: (users, { eq }) => eq(users.id, userId),
   });
@@ -122,7 +122,7 @@ const assignAssetUrlsToProfileDetails = (
 
 
 export const retrieveAuthProfile = defineCachedFunction(async (userId: string) => {
-  const db = useWsDb();
+  const db = useDb();
 
   const [user, teams, selected] = await Promise.all([
     retrieveUser(db, userId),

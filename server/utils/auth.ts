@@ -3,8 +3,10 @@ import { betterAuth, BetterAuthOptions } from "better-auth";
 import { customSession } from "better-auth/plugins";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { EmailTemplate } from "~~/types/email";
-import { useWsDb, tables } from "./db";
+import { useWsDb, tables, useDb } from "./db";
 import { sendTemplatedEmail } from "./email";
+
+const config = useRuntimeConfig();
 
 const options = {
   session: {
@@ -40,7 +42,7 @@ const options = {
       clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
     },
   },
-  database: drizzleAdapter(useWsDb(), {
+  database: drizzleAdapter(config.mainEnv === 'prod' ? useDb() : useWsDb(), {
     provider: "pg", // or "pg" or "mysql"
     usePlural: true,
     schema: {

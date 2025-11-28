@@ -7,7 +7,7 @@ export default defineEventHandler(async (event) => {
   const { role } = await readValidatedBody(event, onboardingRoleSchema.parse);
 
   try {
-    const db = useWsDb();
+    const db = useDb();
 
     const userWithRole = await db.query.users.findFirst({
       where: (users, { eq }) => eq(users.role, role),

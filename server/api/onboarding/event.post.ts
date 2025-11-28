@@ -6,7 +6,8 @@ export default defineEventHandler(async (event) => {
   const { name, slug, description } = await readValidatedBody(event, onboardingEventSchema.parse);
 
   try {
-    const db = useWsDb();
+
+    const db = useDb();
 
     // Get the user's selected team
     const key = `user:${user.id}:selected`;

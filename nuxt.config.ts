@@ -51,6 +51,10 @@ export default defineNuxtConfig({
       observability: {
         logs: true,
       },
+      hyperdrive: {
+        // <BINDING_NAME>: <HYPERDRIVE_ID>
+        POSTGRES: '57c3e59371f744e08a68f78e7d444e35'
+      }
     },
 
   },
@@ -67,6 +71,8 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       appUrl: 'https://tix4u.online',
-    }
+    },
+    dbUrl: process.env.DB_URL || '',
+    mainEnv: process.env.MAIN_ENV || 'prod'
   },
 })
