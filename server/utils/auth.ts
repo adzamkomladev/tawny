@@ -1,5 +1,6 @@
-import type { EventHandlerRequest, H3Event } from "h3";
+import { use, type EventHandlerRequest, type H3Event } from "h3";
 import { betterAuth, BetterAuthOptions } from "better-auth";
+import { customSession } from "better-auth/plugins";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { EmailTemplate } from "~~/types/email";
 import { useWsDb, tables } from "./db";
@@ -51,11 +52,23 @@ const options = {
       generateId: false,
     },
   },
+  plugins: [],
 
 } satisfies BetterAuthOptions;
 
 export const auth = betterAuth({
   ...options,
+  plugins: [
+    ...(options.plugins ?? []),
+    customSession(async ({ user, session }, ctx) => {
+      const selected = await hubKV().get<{ teamId: string | null, eventId: string | null }>(`user:${session.userId}:selected`);
+
+      return {
+        user: { ...user, selected },
+        session
+      };
+    }, options),
+  ],
 });
 
 export type Session = typeof auth.$Infer.Session;

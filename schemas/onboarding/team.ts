@@ -12,3 +12,9 @@ export const onboardingTeamSchema = z.object({
 });
 
 export type OnboardingTeamForm = z.infer<typeof onboardingTeamSchema>;
+
+export const onboardingRoleSchema = z.object({
+  role: z.enum(['organizer', 'affiliate']),
+});
+
+export type OnboardingRoleForm = z.infer<typeof onboardingRoleSchema>;

@@ -5,7 +5,16 @@ import {
 import EventForm from "~/components/onboarding/EventForm.vue";
 
 definePageMeta({
-  layout: 'onboarding'
+  layout: 'onboarding',
+  middleware: [
+    function () {
+      const { needsEvent } = useAuth();
+
+      if (!needsEvent.value) {
+        return navigateTo('/home');
+      }
+    },
+  ],
 });
 
 useHead({

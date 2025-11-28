@@ -1,13 +1,20 @@
 <script lang="ts" setup>
-import {
-  Field,
-  FieldDescription,
-  FieldSeparator,
-} from "@/components/ui/field";
+import { FieldDescription } from "@/components/ui/field";
 import Form from "~/components/onboarding/RoleForm.vue";
 
 definePageMeta({
-  layout: 'onboarding'
+  layout: 'onboarding',
+  middleware: [
+    function () {
+      const { user, hasRole } = useAuth();
+
+      if (hasRole.value) {
+        const role = user.value?.role;
+        const redirectPath = role === 'affiliate' ? '/affiliate/home' : role === 'admin' ? '/admin/home' : '/home';
+        return navigateTo(redirectPath);
+      }
+    },
+  ],
 });
 
 useHead({

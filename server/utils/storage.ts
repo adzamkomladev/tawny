@@ -1,4 +1,4 @@
-import { eq } from "drizzle-orm";
+import { eq, inArray } from "drizzle-orm";
 import { AwsClient } from "aws4fetch";
 import { tables, useHttpDb } from "./db";
 
@@ -49,6 +49,15 @@ export interface PresignedUploadResult {
   pathname: string;
 }
 
+interface CreateAssetRecordOptions {
+  creatorId?: string | null;
+  pathname: string;
+  originalName: string;
+  bucket: string;
+  contentType: string;
+  size?: string | null;
+}
+
 type SignMethod = "GET" | "PUT";
 
 // ============================================================================
@@ -60,6 +69,68 @@ type SignMethod = "GET" | "PUT";
  */
 function generateRandomSuffix(): string {
   return Math.random().toString(36).substring(2, 10);
+}
+
+/**
+ * Extract file extension from filename (includes the dot)
+ */
+function getFileExtension(filename: string): string {
+  const lastDot = filename.lastIndexOf(".");
+  return lastDot !== -1 ? filename.substring(lastDot) : "";
+}
+
+/**
+ * Extract base name from filename (without extension)
+ */
+function getFileBaseName(filename: string): string {
+  const lastDot = filename.lastIndexOf(".");
+  return lastDot !== -1 ? filename.substring(0, lastDot) : filename;
+}
+
+/**
+ * Generate a unique pathname for storage
+ */
+function generatePathname(filename: string, prefix: string): string {
+  const suffix = generateRandomSuffix();
+  const ext = getFileExtension(filename);
+  const baseName = getFileBaseName(filename);
+  return `${prefix}/${baseName}-${suffix}${ext}`;
+}
+
+/**
+ * Create an asset record in the database
+ */
+async function createAssetRecord(options: CreateAssetRecordOptions): Promise<string> {
+  const db = useHttpDb();
+  const [asset] = await db
+    .insert(tables.assets)
+    .values({
+      creatorId: options.creatorId ?? null,
+      pathname: options.pathname,
+      originalName: options.originalName,
+      bucket: options.bucket,
+      contentType: options.contentType,
+      size: options.size ?? null,
+    })
+    .returning({ id: tables.assets.id });
+
+  return asset.id;
+}
+
+/**
+ * Generate a presigned read URL with fallback to API route
+ */
+async function getPresignedUrlWithFallback(
+  assetId: string,
+  pathname: string,
+  options: SignedUrlOptions = {}
+): Promise<string> {
+  try {
+    return await createPresignedReadUrl(pathname, options);
+  } catch {
+    // Fallback to API route in development without --remote
+    return `/api/assets/${assetId}`;
+  }
 }
 
 /**
@@ -145,12 +216,7 @@ export async function getAssetUrl(
   const asset = await getAsset(assetId);
   if (!asset) return null;
 
-  try {
-    return await createPresignedReadUrl(asset.pathname, options);
-  } catch {
-    // Fallback to API route in development without --remote
-    return `/api/assets/${assetId}`;
-  }
+  return getPresignedUrlWithFallback(assetId, asset.pathname, options);
 }
 
 /**
@@ -193,31 +259,20 @@ export async function createPresignedUpload(
     creatorId,
   } = options;
 
-  // Generate pathname with random suffix
-  const suffix = generateRandomSuffix();
-  const ext = filename.includes(".") ? filename.substring(filename.lastIndexOf(".")) : "";
-  const baseName = filename.includes(".") ? filename.substring(0, filename.lastIndexOf(".")) : filename;
-  const pathname = `${prefix}/${baseName}-${suffix}${ext}`;
+  const pathname = generatePathname(filename, prefix);
 
-  // Create asset record in database first
-  const db = useHttpDb();
-  const [asset] = await db
-    .insert(tables.assets)
-    .values({
-      creatorId: creatorId ?? null,
-      pathname,
-      originalName: filename,
-      bucket,
-      contentType,
-      size: null, // Will be unknown until upload completes
-    })
-    .returning({ id: tables.assets.id });
+  const assetId = await createAssetRecord({
+    creatorId,
+    pathname,
+    originalName: filename,
+    bucket,
+    contentType,
+  });
 
-  // Generate presigned upload URL
   const uploadUrl = await createPresignedWriteUrl(pathname, { expiresIn });
 
   return {
-    assetId: asset.id,
+    assetId,
     uploadUrl,
     pathname,
   };
@@ -269,30 +324,26 @@ export async function uploadAsset(
     creatorId,
   } = options;
 
-  // Upload to blob storage
   const blob = await hubBlob().put(file.name, file, {
     addRandomSuffix,
     prefix,
   });
 
-  // Create asset record in database with pathname
-  const db = useHttpDb();
-  const [asset] = await db
-    .insert(tables.assets)
-    .values({
-      creatorId: creatorId ?? null,
-      pathname: blob.pathname,
-      originalName: file.name,
-      bucket,
-      contentType: file.type || blob.contentType || "application/octet-stream",
-      size: blob.size.toString(),
-    })
-    .returning({ id: tables.assets.id });
+  const contentType = file.type || blob.contentType || "application/octet-stream";
+
+  const assetId = await createAssetRecord({
+    creatorId,
+    pathname: blob.pathname,
+    originalName: file.name,
+    bucket,
+    contentType,
+    size: blob.size.toString(),
+  });
 
   return {
-    assetId: asset.id,
+    assetId,
     pathname: blob.pathname,
-    contentType: blob.contentType || file.type,
+    contentType,
     size: blob.size,
   };
 }
@@ -313,6 +364,49 @@ export async function getAsset(assetId: string) {
     .limit(1);
 
   return asset ?? null;
+}
+
+/**
+ * Get multiple assets by IDs in a single query
+ */
+export async function getAssets(assetIds: string[]) {
+  if (assetIds.length === 0) return [];
+
+  const db = useHttpDb();
+  const assets = await db
+    .select()
+    .from(tables.assets)
+    .where(inArray(tables.assets.id, assetIds));
+
+  return assets;
+}
+
+/**
+ * Generate presigned URLs for multiple assets using a single DB query
+ */
+export async function getAssetUrlsBulk(
+  assetIds: string[],
+  options: SignedUrlOptions = {}
+): Promise<Record<string, string | null>> {
+  if (assetIds.length === 0) return {};
+
+  const assets = await getAssets(assetIds);
+  const assetMap = new Map(assets.map((asset) => [asset.id, asset]));
+
+  const results: Record<string, string | null> = {};
+
+  await Promise.all(
+    assetIds.map(async (id) => {
+      const asset = assetMap.get(id);
+      if (!asset) {
+        results[id] = null;
+        return;
+      }
+      results[id] = await getPresignedUrlWithFallback(id, asset.pathname, options);
+    })
+  );
+
+  return results;
 }
 
 /**
@@ -372,7 +466,7 @@ export async function listUserAssets(
   const assetsWithUrls = await Promise.all(
     assets.map(async (asset) => ({
       ...asset,
-      url: await getAssetUrl(asset.id, options),
+      url: await getPresignedUrlWithFallback(asset.id, asset.pathname, options),
     }))
   );
 

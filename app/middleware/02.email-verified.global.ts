@@ -15,7 +15,11 @@ export default defineNuxtRouteMiddleware(async (to) => {
         return;
     }
 
-    const { user } = useAuth();
+    const { user, refreshUser } = useAuth();
+
+    if (!user.value?.emailVerified) {
+        await refreshUser();
+    }
 
     if (!user.value?.emailVerified) {
         return navigateTo({

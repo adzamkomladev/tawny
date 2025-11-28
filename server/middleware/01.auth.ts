@@ -1,5 +1,6 @@
 const authenticatedRoutes = [
   { path: "/api/assets", exact: false },
+  { path: '/api/profile', exact: false },
 ];
 
 export default defineEventHandler(async (event) => {
@@ -16,7 +17,7 @@ export default defineEventHandler(async (event) => {
   const session = await auth.api.getSession({
     headers: event.headers,
   });
-  
+
   if (!session) {
     throw createError({
       statusCode: 401,

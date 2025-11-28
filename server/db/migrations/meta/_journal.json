@@ -15,6 +15,13 @@
       "when": 1764256094066,
       "tag": "0001_great_miracleman",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1764289613451,
+      "tag": "0002_known_big_bertha",
+      "breakpoints": true
     }
   ]
 }

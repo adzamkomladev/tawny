@@ -91,6 +91,7 @@ export const assets = pgTable("assets", {
     bucket: varchar('bucket', { length: 100 }).notNull(),
     contentType: varchar('content_type', { length: 100 }).notNull(),
     size: varchar('size', { length: 50 }),
+    linkedAt: timestamp("linked_at"),
     createdAt: timestamp("created_at").defaultNow(),
     updatedAt: timestamp("updated_at", { mode: "date", precision: 3 }).$onUpdate(
         () => new Date(),

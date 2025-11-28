@@ -5,7 +5,16 @@ import {
 import TeamForm from "~/components/onboarding/TeamForm.vue";
 
 definePageMeta({
-  layout: 'onboarding'
+  layout: 'onboarding',
+  middleware: [
+    function () {
+      const { needsTeam } = useAuth();
+
+      if (!needsTeam.value) {
+        return navigateTo('/home');
+      }
+    },
+  ],
 });
 
 useHead({

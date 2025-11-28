@@ -33,8 +33,7 @@ const onSubmit = handleSubmit(async (payload) => {
   const { error } = await signUp.email({
     name: payload.name,
     email: payload.email,
-    password: payload.password,
-    image: `https://ui-avatars.com/api/?name=${encodeURIComponent(payload.name)}&background=random&size=128`,
+    password: payload.password
   });
 
   if (error) {

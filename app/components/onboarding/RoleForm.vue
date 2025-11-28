@@ -1,31 +1,61 @@
 <script lang="ts" setup>
-import type { HTMLAttributes } from "vue"
+import { useForm } from 'vee-validate';
+import { toTypedSchema } from '@vee-validate/zod';
+import { toast } from 'vue-sonner';
 
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
 import {
   Field,
   FieldContent,
   FieldDescription,
   FieldLabel,
   FieldTitle,
-} from '@/components/ui/field'
+} from '@/components/ui/field';
 import {
   RadioGroup,
   RadioGroupItem,
-} from '@/components/ui/radio-group'
+} from '@/components/ui/radio-group';
+import SubmitButton from "@/components/common/forms/SubmitButton.vue";
 
-const props = defineProps<{
-  class?: HTMLAttributes["class"]
-}>();
+import { onboardingRoleSchema, type OnboardingRoleForm } from '~~/schemas/onboarding/team';
 
-const next = () => navigateTo('/onboarding/affiliate');
+const { refreshUser } = useAuth();
+
+const { handleSubmit, defineField, isSubmitting, meta } = useForm<OnboardingRoleForm>({
+  validationSchema: toTypedSchema(onboardingRoleSchema),
+  initialValues: {
+    role: 'organizer',
+  },
+});
+
+const [role] = defineField('role');
+
+const onSubmit = handleSubmit(async (payload) => {
+  const res = await useOnboarding().setRole(payload);
+
+  if (!res) {
+    toast.error('Error setting role', {
+      description: 'Please try again later.',
+    });
+    return;
+  }
+
+  await refreshUser();
+
+  toast.success('Role set', {
+    description: 'Your role has been set successfully.',
+  });
+
+  if (payload.role === 'affiliate') {
+    navigateTo('/onboarding/affiliate');
+  } else {
+    navigateTo('/onboarding/team');
+  }
+});
 </script>
 <template>
-  <form :class="cn('flex flex-col gap-6', props.class)">
+  <form class="flex flex-col gap-6" @submit.prevent="onSubmit">
     <Field>
-
-      <RadioGroup default-value="organizer">
+      <RadioGroup v-model="role" default-value="organizer">
         <FieldLabel for="organizer-r2h">
           <Field orientation="horizontal">
             <FieldContent>
@@ -51,9 +81,8 @@ const next = () => navigateTo('/onboarding/affiliate');
       </RadioGroup>
     </Field>
     <Field>
-      <Button @click.prevent="next" type="submit">
-        Next
-      </Button>
+      <SubmitButton :disabled="isSubmitting || !meta.valid" :loading="isSubmitting" text="Next"
+        loading-text="Saving…" />
     </Field>
   </form>
 </template>

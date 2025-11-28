@@ -63,4 +63,10 @@ export default defineNuxtConfig({
     "/email/**": { ssr: false },
     "/onboarding/**": { ssr: false },
   },
+
+  runtimeConfig: {
+    public: {
+      appUrl: 'https://tix4u.online',
+    }
+  },
 })
