@@ -1,11 +1,11 @@
-import { drizzle as drizzleHttp } from 'drizzle-orm/neon-http';
-import { drizzle as drizzleWs } from 'drizzle-orm/neon-serverless';
+// import { drizzle as drizzleHttp } from 'drizzle-orm/neon-http';
+// import { drizzle as drizzleWs } from 'drizzle-orm/neon-serverless';
 import { drizzle as drizzlePostgres } from 'drizzle-orm/postgres-js';
 
 import type { Hyperdrive } from '@cloudflare/workers-types'
 import postgres from 'postgres';
 
-import ws from 'ws';
+// import ws from 'ws';
 import { users, accounts, sessions, verifications, teams, assets, events } from './schema';
 
 
