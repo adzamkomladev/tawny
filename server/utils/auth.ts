@@ -6,71 +6,87 @@ import { EmailTemplate } from "~~/types/email";
 import { tables, useDb } from "./db";
 import { sendTemplatedEmail } from "./email";
 
-// const config = useRuntimeConfig();
+// Lazy-initialized auth instance (Cloudflare Workers don't allow I/O at global scope)
+let _auth: ReturnType<typeof betterAuth> | null = null;
 
-const options = {
-  session: {
-    cookieCache: {
+function createAuthOptions(): BetterAuthOptions {
+  return {
+    session: {
+      cookieCache: {
+        enabled: true,
+        maxAge: 5 * 60, // Cache duration in seconds
+      },
+    },
+    emailAndPassword: {
       enabled: true,
-      maxAge: 5 * 60, // Cache duration in seconds
+      sendResetPassword: async ({ user, url, token }, request) => {
+        await sendTemplatedEmail(
+          { name: user.name || "User", email: user.email },
+          "Reset your password",
+          EmailTemplate.RESET_PASSWORD,
+          { name: user.name || "User", resetLink: url }
+        );
+      },
     },
-  },
-  emailAndPassword: {
-    enabled: true,
-    sendResetPassword: async ({ user, url, token }, request) => {
-      await sendTemplatedEmail(
-        { name: user.name || "User", email: user.email },
-        "Reset your password",
-        EmailTemplate.RESET_PASSWORD,
-        { name: user.name || "User", resetLink: url }
-      );
+    emailVerification: {
+      sendVerificationEmail: async ({ user, url, token }, request) => {
+        await sendTemplatedEmail(
+          { name: user.name || "User", email: user.email },
+          "Verify your email address",
+          EmailTemplate.EMAIL_VERIFICATION,
+          { name: user.name || "User", verificationLink: url }
+        );
+      },
     },
-  },
-  emailVerification: {
-    sendVerificationEmail: async ({ user, url, token }, request) => {
-      await sendTemplatedEmail(
-        { name: user.name || "User", email: user.email },
-        "Verify your email address",
-        EmailTemplate.EMAIL_VERIFICATION,
-        { name: user.name || "User", verificationLink: url }
-      );
+    socialProviders: {
+      google: {
+        clientId: process.env.GOOGLE_CLIENT_ID as string,
+        clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
+      },
     },
-  },
-  socialProviders: {
-    google: {
-      clientId: process.env.GOOGLE_CLIENT_ID as string,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
+    database: drizzleAdapter(useDb(), {
+      provider: "pg",
+      usePlural: true,
+      schema: {
+        ...tables
+      }
+    }),
+    advanced: {
+      database: {
+        generateId: false,
+      },
     },
-  },
-  database: drizzleAdapter(useDb(), {
-    provider: "pg", // or "pg" or "mysql"
-    usePlural: true,
-    schema: {
-      ...tables
-    }
-  }),
-  advanced: {
-    database: {
-      generateId: false,
-    },
-  },
-  plugins: [],
+    plugins: [],
+  };
+}
 
-} satisfies BetterAuthOptions;
+export function useAuth() {
+  if (_auth) return _auth;
 
-export const auth = betterAuth({
-  ...options,
-  plugins: [
-    ...(options.plugins ?? []),
-    customSession(async ({ user, session }, ctx) => {
-      const selected = await hubKV().get<{ teamId: string | null, eventId: string | null }>(`user:${session.userId}:selected`);
+  const options = createAuthOptions();
+  _auth = betterAuth({
+    ...options,
+    plugins: [
+      ...(options.plugins ?? []),
+      customSession(async ({ user, session }, ctx) => {
+        const selected = await hubKV().get<{ teamId: string | null, eventId: string | null }>(`user:${session.userId}:selected`);
 
-      return {
-        user: { ...user, selected },
-        session
-      };
-    }, options),
-  ],
+        return {
+          user: { ...user, selected },
+          session
+        };
+      }, options),
+    ],
+  });
+
+  return _auth;
+}
+
+// For backward compatibility - Proxy that lazily initializes
+export const auth = new Proxy({} as ReturnType<typeof betterAuth>, {
+  get(_, prop) {
+    return (useAuth() as any)[prop];
+  }
 });
 
 export type Session = typeof auth.$Infer.Session;
