@@ -2,7 +2,9 @@
     "name": "panda-v2",
     "main": "./dist/server/index.mjs",
     "compatibility_date": "2025-11-28",
-    "compatibility_flags": ["nodejs_compat"],
+    "compatibility_flags": [
+        "nodejs_compat"
+    ],
     "assets": {
         "binding": "ASSETS",
         "directory": "./dist/public/"
