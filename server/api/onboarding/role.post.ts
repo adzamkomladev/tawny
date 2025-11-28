@@ -10,7 +10,7 @@ export default defineEventHandler(async (event) => {
     const db = useDb();
 
     const userWithRole = await db.query.users.findFirst({
-      where: (users, { eq }) => eq(users.role, role),
+      where: (users, { eq, and, isNotNull }) => and(eq(users.id, user.id), isNotNull(users.role)),
       columns: { id: true, role: true },
     });
 

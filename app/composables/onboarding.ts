@@ -10,7 +10,7 @@ export const useOnboarding = () => {
 
       return success;
     } catch (error) {
-      console.error("Failed to  create team:", error);
+      console.error("Failed to create team:", error);
       return false;
     }
   }

@@ -3,7 +3,6 @@ import type { AuthProfile } from "~~/types/profile";
 const user = ref<AuthProfile | null>(null);
 
 export const useAuth = () => {
-
   const hasRole = computed(() => !!user.value?.role);
   const isAffiliate = computed(() => user.value?.role === 'affiliate');
   const needsTeam = computed(() => {
