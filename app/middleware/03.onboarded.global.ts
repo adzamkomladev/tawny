@@ -1,46 +1,44 @@
-import { is } from "drizzle-orm";
-
-const authenticatedRoutes = [
+const onboardedRoutes = [
     { path: "/affiliate", exact: false },
-    { path: "/admin", exact: true },
-    { path: "/onboarding", exact: false }
+    { path: "/admin", exact: false },
+    { path: "/home", exact: true },
 ];
 
 export default defineNuxtRouteMiddleware(async (to) => {
     const url = to.path;
 
     if (
-        !authenticatedRoutes.some((route) =>
+        !onboardedRoutes.some((route) =>
             route.exact ? url === route.path : url.startsWith(route.path),
         )
     ) {
         return;
     }
 
-    const { user, hasRole, needsEvent, needsTeam, isAffiliate } = useAuth();
+    const { hasRole, needsEvent, needsTeam, isAffiliate } = useAuth();
 
-    if (!hasRole && url !== '/onboarding') {
+    if (!hasRole.value) {
         return navigateTo({
             path: '/onboarding',
             query: { redirect: url },
         });
     }
 
-    if (isAffiliate && true && url !== '/onboarding/affiliate') {
+    if (isAffiliate.value && true) {
         return navigateTo({
             path: '/onboarding/affiliate',
             query: { redirect: url },
         });
     }
-   
-    if (needsTeam && url !== '/onboarding/team') {
+
+    if (needsTeam.value) {
         return navigateTo({
             path: '/onboarding/team',
             query: { redirect: url },
         });
     }
 
-    if (needsEvent && url !== '/onboarding/event') {
+    if (needsEvent.value) {
         return navigateTo({
             path: '/onboarding/event',
             query: { redirect: url },

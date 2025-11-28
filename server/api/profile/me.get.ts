@@ -2,11 +2,10 @@ import { AuthProfile, ProfileTeam, ProfileUser } from '~~/types/profile';
 
 export default defineEventHandler(async (event) => {
   const { user } = getCurrentAuth(event)!;
-  console.log('Session user', user);
   
   try {
     const authProfile = await retrieveAuthProfile(user.id);
-console.log('Auth profile retrieved:', authProfile);
+
     return { success: true, user: authProfile };
   } catch (error) {
     console.error("Error in onboarding team creation:", error);
@@ -138,6 +137,6 @@ export const retrieveAuthProfile = defineCachedFunction(async (userId: string) =
   return assignAssetUrlsToProfileDetails(user!, teams, selected, assetsWithUrls);
 }, {
   maxAge: 60 * 60 * 2, // 2 hours,
-  name: "profileMe",
+  name: "authProfile",
   getKey: (userId: string) => userId,
 });

@@ -1,8 +1,9 @@
 const authenticatedRoutes = [
     { path: "/affiliate", exact: false },
-    { path: "/admin", exact: true },
+    { path: "/admin", exact: false },
     { path: "/onboarding", exact: false },
-    { path: '/email', exact: false }
+    { path: '/email', exact: false },
+    { path: "/home", exact: true },
 ];
 
 export default defineNuxtRouteMiddleware(async (to) => {

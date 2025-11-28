@@ -18,8 +18,8 @@ export const useAuth = () => {
   });
 
   async function refreshUser() {
-    const { user: fetchedUser } = await $fetch('/api/profile/me');
-    user.value = fetchedUser || null;
+    const { user: authProfile } = await $fetch('/api/profile/me');
+    user.value = authProfile || null;
   }
 
   function clearUser() {
