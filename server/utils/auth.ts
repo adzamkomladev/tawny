@@ -3,7 +3,7 @@ import { betterAuth, BetterAuthOptions } from "better-auth";
 import { customSession } from "better-auth/plugins";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { EmailTemplate } from "~~/types/email";
-import { useWsDb, tables, useDb } from "./db";
+import { tables, useDb } from "./db";
 import { sendTemplatedEmail } from "./email";
 
 // const config = useRuntimeConfig();

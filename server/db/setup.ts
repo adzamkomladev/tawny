@@ -19,20 +19,20 @@ const schema = {
     events,
 };
 
-export const httpDb = drizzleHttp({
-    connection: {
-        connectionString: process.env.DB_URL!,
-    },
-    schema
-});
+// export const httpDb = drizzleHttp({
+//     connection: {
+//         connectionString: process.env.DB_URL!,
+//     },
+//     schema
+// });
 
-export const wsDb = drizzleWs({
-    connection: {
-        connectionString: process.env.DB_URL!,
-    },
-    ws,
-    schema
-});
+// export const wsDb = drizzleWs({
+//     connection: {
+//         connectionString: process.env.DB_URL!,
+//     },
+//     ws,
+//     schema
+// });
 
 
 
