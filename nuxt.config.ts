@@ -53,7 +53,7 @@ export default defineNuxtConfig({
       },
       hyperdrive: {
         // <BINDING_NAME>: <HYPERDRIVE_ID>
-        POSTGRES: '57c3e59371f744e08a68f78e7d444e35'
+        POSTGRES: 'b11315293a284d35a7c05eaf1b7e905c'
       },
       queue: {
         NOTIFICATIONS_QUEUE: {
