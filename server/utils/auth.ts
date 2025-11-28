@@ -1,4 +1,4 @@
-import { use, type EventHandlerRequest, type H3Event } from "h3";
+import { type EventHandlerRequest, type H3Event } from "h3";
 import { betterAuth, BetterAuthOptions } from "better-auth";
 import { customSession } from "better-auth/plugins";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
