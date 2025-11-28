@@ -1,5 +1,5 @@
 import { eq } from 'drizzle-orm';
-import { onboardingRoleSchema } from '~~/schemas/onboarding/team';
+import { onboardingRoleSchema } from '~~/schemas/onboarding';
 
 export default defineEventHandler(async (event) => {
   const { user } = getCurrentAuth(event)!;

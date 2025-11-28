@@ -1,4 +1,4 @@
-import type { OnboardingRoleForm, OnboardingTeamForm } from "~~/schemas/onboarding/team";
+import type { OnboardingRoleForm, OnboardingEventForm, OnboardingTeamForm } from "~~/schemas/onboarding";
 
 export const useOnboarding = () => {
   async function createTeam(data: OnboardingTeamForm) {
@@ -11,6 +11,20 @@ export const useOnboarding = () => {
       return success;
     } catch (error) {
       console.error("Failed to create team:", error);
+      return false;
+    }
+  }
+
+  async function createEvent(data: OnboardingEventForm) {
+    try {
+      const { success } = await $fetch('/api/onboarding/event', {
+        method: 'POST',
+        body: data,
+      });
+
+      return success;
+    } catch (error) {
+      console.error("Failed to create event:", error);
       return false;
     }
   }
@@ -31,6 +45,7 @@ export const useOnboarding = () => {
 
   return {
     createTeam,
+    createEvent,
     setRole,
   }
 }

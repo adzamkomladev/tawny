@@ -16,9 +16,7 @@ import {
 } from '@/components/ui/radio-group';
 import SubmitButton from "@/components/common/forms/SubmitButton.vue";
 
-import { onboardingRoleSchema, type OnboardingRoleForm } from '~~/schemas/onboarding/team';
-
-const { refreshUser } = useAuth();
+import { onboardingRoleSchema, type OnboardingRoleForm } from '~~/schemas/onboarding';
 
 const { handleSubmit, defineField, isSubmitting, meta } = useForm<OnboardingRoleForm>({
   validationSchema: toTypedSchema(onboardingRoleSchema),
@@ -39,7 +37,7 @@ const onSubmit = handleSubmit(async (payload) => {
     return;
   }
 
-  await refreshUser();
+  await useAuth().refreshUser();
 
   toast.success('Role set', {
     description: 'Your role has been set successfully.',

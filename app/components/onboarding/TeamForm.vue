@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/field";
 import SubmitButton from "@/components/common/forms/SubmitButton.vue";
 
-import { onboardingTeamSchema, type OnboardingTeamForm } from '~~/schemas/onboarding/team';
+import { onboardingTeamSchema, type OnboardingTeamForm } from '~~/schemas/onboarding';
 
 const config = useRuntimeConfig();
 

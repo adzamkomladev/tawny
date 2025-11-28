@@ -1,4 +1,4 @@
-import { onboardingTeamSchema } from '~~/schemas/onboarding/team';
+import { onboardingTeamSchema } from '~~/schemas/onboarding';
 
 export default defineEventHandler(async (event) => {
   const { user } = getCurrentAuth(event)!;
