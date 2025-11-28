@@ -1,5 +1,5 @@
 const onboardedRoutes = [
-    { path: "/affiliate", exact: false },
+    { path: "/affiliate/", exact: false },
     { path: "/admin", exact: false },
     { path: "/home", exact: true },
 ];

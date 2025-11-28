@@ -6,7 +6,7 @@ import type { Hyperdrive } from '@cloudflare/workers-types'
 import postgres from 'postgres';
 
 // import ws from 'ws';
-import { users, accounts, sessions, verifications, teams, assets, events } from './schema';
+import { users, accounts, sessions, verifications, teams, assets, events, affiliateApplications } from './schema';
 
 
 const schema = {
@@ -17,6 +17,7 @@ const schema = {
     teams,
     assets,
     events,
+    affiliateApplications
 };
 
 // export const httpDb = drizzleHttp({

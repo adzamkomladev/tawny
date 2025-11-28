@@ -1,5 +1,5 @@
 const authenticatedRoutes = [
-    { path: "/affiliate", exact: false },
+    { path: "/affiliate/", exact: false },
     { path: "/admin", exact: false },
     { path: "/onboarding", exact: false },
     { path: '/email', exact: false },

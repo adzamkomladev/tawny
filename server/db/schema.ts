@@ -146,3 +146,21 @@ export const events = pgTable("events", {
         () => new Date(),
     ),
 });
+
+export const affiliateApplications = pgTable("affiliate_applications", {
+    id: uuid()
+        .$defaultFn(() => uuidv7())
+        .primaryKey(),
+    name: varchar("name", { length: 200 }).notNull(),
+    email: varchar("email", { length: 100 }).notNull(),
+    phone: varchar("phone", { length: 20 }).notNull(),
+    reason: varchar("reason", { length: 500 }).notNull(),
+    acceptTerms: boolean("accept_terms").notNull().default(false),
+    status: varchar("status", { length: 30 }).notNull().default("pending"),
+    verification_code: varchar("verification_code", { length: 10 }),
+    statusReason: varchar("status_reason", { length: 300 }),
+    createdAt: timestamp("created_at").defaultNow(),
+    updatedAt: timestamp("updated_at", { mode: "date", precision: 3 }).$onUpdate(
+        () => new Date(),
+    ),
+});

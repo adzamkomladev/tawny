@@ -12,6 +12,7 @@ const footerLinks = {
     { label: 'About', href: '#' },
     { label: 'Blog', href: '#' },
     { label: 'Careers', href: '#' },
+    { label: 'Affiliates', href: '/affiliates', isHighlighted: true },
     { label: 'Contact', href: '#' },
   ],
   resources: [
@@ -51,13 +52,8 @@ const socialLinks = [
             </p>
             <!-- Social Links -->
             <div class="flex items-center gap-4">
-              <a
-                v-for="social in socialLinks"
-                :key="social.label"
-                :href="social.href"
-                :aria-label="social.label"
-                class="size-9 rounded-lg bg-background border border-border flex items-center justify-center text-muted-foreground hover:text-foreground hover:border-primary/50 transition-colors"
-              >
+              <a v-for="social in socialLinks" :key="social.label" :href="social.href" :aria-label="social.label"
+                class="size-9 rounded-lg bg-background border border-border flex items-center justify-center text-muted-foreground hover:text-foreground hover:border-primary/50 transition-colors">
                 <Icon :name="social.icon" class="size-4" />
               </a>
             </div>
@@ -68,10 +64,7 @@ const socialLinks = [
             <h4 class="font-semibold text-sm mb-4">Product</h4>
             <ul class="space-y-3">
               <li v-for="link in footerLinks.product" :key="link.label">
-                <a
-                  :href="link.href"
-                  class="text-sm text-muted-foreground hover:text-foreground transition-colors"
-                >
+                <a :href="link.href" class="text-sm text-muted-foreground hover:text-foreground transition-colors">
                   {{ link.label }}
                 </a>
               </li>
@@ -83,10 +76,16 @@ const socialLinks = [
             <h4 class="font-semibold text-sm mb-4">Company</h4>
             <ul class="space-y-3">
               <li v-for="link in footerLinks.company" :key="link.label">
-                <a
-                  :href="link.href"
-                  class="text-sm text-muted-foreground hover:text-foreground transition-colors"
-                >
+                <NuxtLink v-if="link.href.startsWith('/')" :to="link.href"
+                  class="text-sm text-muted-foreground hover:text-foreground transition-colors inline-flex items-center gap-2">
+                  {{ link.label }}
+                  <span v-if="link.isHighlighted" class="relative flex size-2">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75" />
+                    <span class="relative inline-flex rounded-full size-2 bg-primary" />
+                  </span>
+                </NuxtLink>
+                <a v-else :href="link.href"
+                  class="text-sm text-muted-foreground hover:text-foreground transition-colors">
                   {{ link.label }}
                 </a>
               </li>
@@ -98,10 +97,7 @@ const socialLinks = [
             <h4 class="font-semibold text-sm mb-4">Resources</h4>
             <ul class="space-y-3">
               <li v-for="link in footerLinks.resources" :key="link.label">
-                <a
-                  :href="link.href"
-                  class="text-sm text-muted-foreground hover:text-foreground transition-colors"
-                >
+                <a :href="link.href" class="text-sm text-muted-foreground hover:text-foreground transition-colors">
                   {{ link.label }}
                 </a>
               </li>
@@ -113,10 +109,7 @@ const socialLinks = [
             <h4 class="font-semibold text-sm mb-4">Legal</h4>
             <ul class="space-y-3">
               <li v-for="link in footerLinks.legal" :key="link.label">
-                <a
-                  :href="link.href"
-                  class="text-sm text-muted-foreground hover:text-foreground transition-colors"
-                >
+                <a :href="link.href" class="text-sm text-muted-foreground hover:text-foreground transition-colors">
                   {{ link.label }}
                 </a>
               </li>
@@ -131,7 +124,8 @@ const socialLinks = [
           © {{ currentYear }} Tix4u. All rights reserved.
         </p>
         <p class="text-sm text-muted-foreground">
-          Made with <Icon name="lucide:heart" class="size-4 inline text-primary" /> in Ghana
+          Made with
+          <Icon name="lucide:heart" class="size-4 inline text-primary" /> in Ghana
         </p>
       </div>
     </div>

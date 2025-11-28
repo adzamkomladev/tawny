@@ -1,5 +1,5 @@
 const emailVerifiedRoutes = [
-    { path: "/affiliate", exact: false },
+    { path: "/affiliate/", exact: false },
     { path: "/admin", exact: false },
     { path: "/onboarding", exact: false },
     { path: "/home", exact: true },
