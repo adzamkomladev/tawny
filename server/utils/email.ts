@@ -21,7 +21,7 @@ export const sendTemplatedEmail = async (
       template_data: data,
     });
 
-    console.log("Email sent successfully. The Reference ID:", referenceId);
+    console.log("Email sent successfully. Reference ID:", referenceId);
   } catch (error) {
     console.error("Error sending email:", error);
   }
