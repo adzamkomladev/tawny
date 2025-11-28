@@ -4,6 +4,8 @@ export default defineEventHandler(async (event) => {
   const { user } = getCurrentAuth(event)!;
   
   try {
+    await invalidateCacheEntry({ name: 'authProfile', key: user.id });
+
     const authProfile = await retrieveAuthProfile(user.id);
 
     return { success: true, user: authProfile };
