@@ -6,9 +6,6 @@ import { EmailTemplate } from "~~/types/email";
 import { tables, useDb } from "./db";
 import { sendTemplatedEmail } from "./email";
 
-// Lazy-initialized auth instance (Cloudflare Workers don't allow I/O at global scope)
-let _auth: ReturnType<typeof betterAuth> | null = null;
-
 function createAuthOptions(): BetterAuthOptions {
   return {
     session: {
@@ -60,11 +57,10 @@ function createAuthOptions(): BetterAuthOptions {
   };
 }
 
+// Create fresh auth instance per request (required for Cloudflare Workers stateless model)
 export function useAuth() {
-  if (_auth) return _auth;
-
   const options = createAuthOptions();
-  _auth = betterAuth({
+  return betterAuth({
     ...options,
     plugins: [
       ...(options.plugins ?? []),
@@ -78,11 +74,9 @@ export function useAuth() {
       }, options),
     ],
   });
-
-  return _auth;
 }
 
-// For backward compatibility - Proxy that lazily initializes
+// For backward compatibility - Proxy that creates fresh instance per access
 export const auth = new Proxy({} as ReturnType<typeof betterAuth>, {
   get(_, prop) {
     return (useAuth() as any)[prop];

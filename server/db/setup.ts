@@ -36,47 +36,46 @@ const schema = {
 // });
 
 
-// Lazy-initialized database instance (Cloudflare Workers don't allow I/O at global scope)
-let _db: ReturnType<typeof drizzlePostgres<typeof schema>> | null = null;
-let _postgres: ReturnType<typeof postgres> | null = null;
-
-export function usePostgres() {
-    if (_postgres) return _postgres;
-
+function getConnectionString(): { url: string; isHyperdrive: boolean } {
     const config = useRuntimeConfig();
-    // @ts-expect-error globalThis.__env__ is not defined
-    const hyperdrive = process.env.POSTGRES || globalThis.__env__?.POSTGRES || globalThis.POSTGRES as Hyperdrive | undefined
-    const dbUrl = hyperdrive?.connectionString || config.dbUrl || process.env.DB_URL
 
-    if (!dbUrl) {
-        throw createError('Missing `POSTGRES` hyperdrive binding or `DB_URL` env variable')
+    // Try to get Hyperdrive binding from Cloudflare environment
+    // @ts-expect-error - Cloudflare bindings available at runtime
+    const hyperdrive = globalThis.__env__?.POSTGRES as Hyperdrive | undefined;
+
+    if (hyperdrive?.connectionString) {
+        return { url: hyperdrive.connectionString, isHyperdrive: true };
     }
 
-    // Hyperdrive handles connection pooling and SSL, so we disable prepare (no named prepared statements)
-    // and avoid SSL when using Hyperdrive since it terminates TLS at the edge
-    _postgres = postgres(dbUrl, {
-        ssl: hyperdrive ? false : 'require',
-        prepare: false, // Required for Hyperdrive - disables prepared statements
-        connect_timeout: 10,
-        idle_timeout: 20,
-        max_lifetime: 60 * 30, // 30 minutes
-    })
+    // Fallback to runtime config or env variable
+    const dbUrl = config.dbUrl || process.env.DB_URL;
+    if (dbUrl) {
+        return { url: dbUrl, isHyperdrive: false };
+    }
 
-    return _postgres;
+    throw createError('Missing `POSTGRES` hyperdrive binding or `DB_URL` env variable');
+}
+
+export function usePostgres() {
+    const { url, isHyperdrive } = getConnectionString();
+
+    // Create a new postgres client for each call
+    // Hyperdrive handles connection pooling, so we create lightweight clients
+    return postgres(url, {
+        ssl: isHyperdrive ? false : 'require', // Hyperdrive terminates TLS
+        prepare: false, // Required for connection pooling (Hyperdrive)
+        max: 1, // Single connection per request in Workers
+    });
 }
 
 export function useDbInstance() {
-    if (_db) return _db;
-
-    _db = drizzlePostgres({
+    return drizzlePostgres({
         client: usePostgres(),
         schema
     });
-
-    return _db;
 }
 
-// For backward compatibility - getter that lazily initializes
+// For backward compatibility - creates a new instance each call
 export const db = new Proxy({} as ReturnType<typeof drizzlePostgres<typeof schema>>, {
     get(_, prop) {
         return (useDbInstance() as any)[prop];
