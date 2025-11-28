@@ -8,6 +8,7 @@ import { sendTemplatedEmail } from "./email";
 
 function createAuthOptions(): BetterAuthOptions {
   return {
+    secret: process.env.BETTER_AUTH_SECRET || "01gWVDXgm8osaxL6TelTcohhkqMfyal3",
     session: {
       cookieCache: {
         enabled: true,
