@@ -52,8 +52,14 @@ export function usePostgres() {
         throw createError('Missing `POSTGRES` hyperdrive binding or `DB_URL` env variable')
     }
 
+    // Hyperdrive handles connection pooling and SSL, so we disable prepare (no named prepared statements)
+    // and avoid SSL when using Hyperdrive since it terminates TLS at the edge
     _postgres = postgres(dbUrl, {
-        ssl: !hyperdrive ? 'require' : undefined
+        ssl: hyperdrive ? false : 'require',
+        prepare: false, // Required for Hyperdrive - disables prepared statements
+        connect_timeout: 10,
+        idle_timeout: 20,
+        max_lifetime: 60 * 30, // 30 minutes
     })
 
     return _postgres;
