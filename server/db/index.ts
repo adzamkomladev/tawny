@@ -1,2 +1,2 @@
 export * from "./schema";
-export * from "./setup";
+export { useDbInstance, usePostgres, db } from "./setup";

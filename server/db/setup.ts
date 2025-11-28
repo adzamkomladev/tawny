@@ -36,24 +36,43 @@ const schema = {
 // });
 
 
-const config = useRuntimeConfig();
+// Lazy-initialized database instance (Cloudflare Workers don't allow I/O at global scope)
+let _db: ReturnType<typeof drizzlePostgres<typeof schema>> | null = null;
+let _postgres: ReturnType<typeof postgres> | null = null;
 
 export function usePostgres() {
+    if (_postgres) return _postgres;
+
+    const config = useRuntimeConfig();
     // @ts-expect-error globalThis.__env__ is not defined
     const hyperdrive = process.env.POSTGRES || globalThis.__env__?.POSTGRES || globalThis.POSTGRES as Hyperdrive | undefined
     const dbUrl = hyperdrive?.connectionString || config.dbUrl || process.env.DB_URL
-    console.log('Database URL:', dbUrl);
+
     if (!dbUrl) {
         throw createError('Missing `POSTGRES` hyperdrive binding or `DB_URL` env variable')
     }
 
-    return postgres(dbUrl, {
+    _postgres = postgres(dbUrl, {
         ssl: !hyperdrive ? 'require' : undefined
     })
+
+    return _postgres;
 }
 
+export function useDbInstance() {
+    if (_db) return _db;
 
-export const db = drizzlePostgres({
-    client: usePostgres(),
-    schema
+    _db = drizzlePostgres({
+        client: usePostgres(),
+        schema
+    });
+
+    return _db;
+}
+
+// For backward compatibility - getter that lazily initializes
+export const db = new Proxy({} as ReturnType<typeof drizzlePostgres<typeof schema>>, {
+    get(_, prop) {
+        return (useDbInstance() as any)[prop];
+    }
 });

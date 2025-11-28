@@ -1,4 +1,4 @@
-import { db } from "../db";
+import { useDbInstance } from "../db/setup";
 import * as schema from "../db/schema";
 
 export const tables = schema;
@@ -12,5 +12,5 @@ export const tables = schema;
 // }
 
 export function useDb() {
-  return db;
+  return useDbInstance();
 }
