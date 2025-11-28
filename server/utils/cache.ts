@@ -16,21 +16,21 @@ export function escapeKey(key: string | string[]): string {
 
 /**
  * Generates a full cache key for cached functions.
- * Uses the pattern: `${group}/${name}/${key}.json`
+ * Uses the pattern: `${group}:${name}:${key}.json`
  *
  * @param options - Configuration for the cache key
  * @param options.name - The function/handler name
  * @param options.key - The specific key (will be escaped)
- * @param options.group - The cache group (defaults to 'nitro/functions')
+ * @param options.group - The cache group (defaults to 'nitro')
  * @param options.type - The cache type: 'functions', 'handlers', or 'routes' (defaults to 'functions')
  * @returns The full cache key string
  *
  * @example
  * getCacheKey({ name: 'getAccessToken', key: 'default' })
- * // 'nitro/functions/getAccessToken/default.json'
+ * // 'nitro:functions:getAccessToken:default.json'
  *
  * getCacheKey({ name: 'products', key: 'product/123/details', type: 'handlers' })
- * // 'nitro/handlers/products/product123details.json'
+ * // 'nitro:handlers:products:product123details.json'
  */
 export function getCacheKey(options: {
   name: string
@@ -39,8 +39,8 @@ export function getCacheKey(options: {
   type?: 'functions' | 'handlers' | 'routes'
 }): string {
   const { name, key, group = 'nitro', type = 'functions' } = options
-  const normalizedKey = escapeKey(key)
-  return `${group}/${type}/${name}/${normalizedKey}.json`
+  const normalizedKey = escapeKey(key);
+  return `${group}:${type}:${name}:${normalizedKey}.json`
 }
 
 /**
@@ -62,7 +62,8 @@ export async function invalidateCacheEntry(options: {
   group?: string
   type?: 'functions' | 'handlers' | 'routes'
 }): Promise<void> {
-  const cacheKey = getCacheKey(options)
+  const cacheKey = getCacheKey(options);
+  console.log(`Invalidating cache entry: ${cacheKey}`)
   await useStorage('cache').removeItem(cacheKey)
 }
 
@@ -70,14 +71,14 @@ export async function invalidateCacheEntry(options: {
  * Invalidates all cache entries with a given prefix.
  * Useful for clearing all entries for a specific handler or function.
  *
- * @param prefix - The cache key prefix to clear (e.g., 'nitro/handlers', 'nitro/functions/getProducts')
+ * @param prefix - The cache key prefix to clear (e.g., 'nitro:handlers', 'nitro:functions:getProducts')
  *
  * @example
  * // Clear all handler caches
- * await invalidateCacheByPrefix('nitro/handlers')
+ * await invalidateCacheByPrefix('nitro:handlers')
  *
  * // Clear all caches for a specific function
- * await invalidateCacheByPrefix('nitro/functions/getProducts')
+ * await invalidateCacheByPrefix('nitro:functions:getProducts')
  */
 export async function invalidateCacheByPrefix(prefix: string): Promise<void> {
   await useStorage('cache').clear(prefix)
@@ -95,7 +96,7 @@ export async function invalidateCacheByPrefix(prefix: string): Promise<void> {
  *
  * @example
  * getCacheKeyPrefix({ name: 'getProducts' })
- * // 'nitro/functions/getProducts'
+ * // 'nitro:functions:getProducts'
  */
 export function getCacheKeyPrefix(options: {
   name: string
@@ -103,5 +104,5 @@ export function getCacheKeyPrefix(options: {
   type?: 'functions' | 'handlers' | 'routes'
 }): string {
   const { name, group = 'nitro', type = 'functions' } = options
-  return `${group}/${type}/${name}`
+  return `${group}:${type}:${name}`
 }
