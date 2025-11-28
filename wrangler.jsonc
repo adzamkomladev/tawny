@@ -1,7 +1,7 @@
 {
     "name": "panda-v2",
     "main": "./.output/server/index.mjs",
-    "compatibility_date": "<TBD>",
+    "compatibility_date": "2025-11-28",
     "assets": {
         "binding": "ASSETS",
         "directory": "./.output/public/"
