@@ -15,7 +15,6 @@
     "db:studio": "npx drizzle-kit studio --verbose"
   },
   "dependencies": {
-    "@neondatabase/serverless": "^1.0.2",
     "@nuxt/fonts": "0.12.1",
     "@nuxt/hints": "1.0.0-alpha.1",
     "@nuxt/icon": "2.1.0",
