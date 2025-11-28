@@ -18,8 +18,13 @@ export const useAuth = () => {
   });
 
   async function refreshUser() {
-    const { user: authProfile } = await $fetch('/api/profile/me');
-    user.value = authProfile || null;
+    try {
+      const { user: authProfile } = await $fetch('/api/profile/me');
+      user.value = authProfile || null;
+    } catch (error) {
+      console.error("Failed to refresh user:", error);
+      clearUser();
+    }
   }
 
   function clearUser() {
@@ -27,7 +32,13 @@ export const useAuth = () => {
   }
 
   async function logout() {
-    await signOut();
+    try {
+      await signOut();
+
+    } catch (error) {
+      console.error("Failed to signout:", error);
+    }
+
     clearUser();
     navigateTo("/login");
   }
