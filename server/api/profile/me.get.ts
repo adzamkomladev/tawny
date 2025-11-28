@@ -140,5 +140,5 @@ export const retrieveAuthProfile = defineCachedFunction(async (userId: string) =
 }, {
   maxAge: 60 * 60 * 2, // 2 hours,
   name: "authProfile",
-  getKey: (userId: string) => userId,
+  getKey: (userId: string) => escapeKey(userId),
 });
