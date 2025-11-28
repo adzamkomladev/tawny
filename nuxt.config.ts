@@ -72,7 +72,7 @@ export default defineNuxtConfig({
     public: {
       appUrl: 'https://tix4u.online',
     },
-    dbUrl: process.env.DB_URL || '',
+    dbUrl: process.env.DB_URL,
     mainEnv: process.env.MAIN_ENV || 'prod'
   },
 })

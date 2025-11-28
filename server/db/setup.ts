@@ -35,11 +35,13 @@ const schema = {
 // });
 
 
+const config = useRuntimeConfig();
 
 export function usePostgres() {
     // @ts-expect-error globalThis.__env__ is not defined
     const hyperdrive = process.env.POSTGRES || globalThis.__env__?.POSTGRES || globalThis.POSTGRES as Hyperdrive | undefined
-    const dbUrl = hyperdrive?.connectionString || process.env.DB_URL
+    const dbUrl = hyperdrive?.connectionString || config.dbUrl || process.env.DB_URL
+    console.log('Database URL:', dbUrl);
     if (!dbUrl) {
         throw createError('Missing `POSTGRES` hyperdrive binding or `DB_URL` env variable')
     }
