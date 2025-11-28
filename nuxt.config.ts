@@ -57,7 +57,7 @@ export default defineNuxtConfig({
       },
       queue: {
         NOTIFICATIONS_QUEUE: {
-          queue_name: "notifications-queue",
+          queue_name: "notifications",
         }
       },
     },
