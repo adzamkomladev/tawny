@@ -63,7 +63,6 @@ export async function invalidateCacheEntry(options: {
   type?: 'functions' | 'handlers' | 'routes'
 }): Promise<void> {
   const cacheKey = getCacheKey(options);
-  console.log(`Invalidating cache entry: ${cacheKey}`)
   await useStorage('cache').removeItem(cacheKey)
 }
 

@@ -1,4 +1,4 @@
-# Tix4u Panda
+# Tix4u Tawny
 
 > **A modern events platform bundling ticketing, payments, and live voting with USSD support.**
 
@@ -53,7 +53,7 @@ Tix4u is a comprehensive SaaS platform designed for event organizers, affiliates
 ## 📂 Project Structure
 
 ```
-panda/
+tawny/
 ├── .github/
 │   └── copilot-instructions.md   # AI coding guidelines
 ├── app/
@@ -106,8 +106,7 @@ panda/
 
 ### Prerequisites
 
-- **Node.js** 18+ or **Bun** (recommended for `shadcn` CLI)
-- **npm**, **pnpm**, **yarn**, or **bun**
+- **Bun** 1.0+ (recommended) or **Node.js** 22+
 - **Neon Postgres** account (for database)
 - **Cloudflare Workers** account (for deployment)
 
@@ -115,14 +114,12 @@ panda/
 
 1. **Clone the repository**:
    ```bash
-   git clone https://github.com/adzamkomladev/panda.git
-   cd panda
+   git clone https://github.com/adzamkomladev/tawny.git
+   cd tawny
    ```
 
 2. **Install dependencies**:
    ```bash
-   npm install
-   # or
    bun install
    ```
 
@@ -141,12 +138,12 @@ panda/
 
 4. **Run database migrations**:
    ```bash
-   npm run db:migrate
+   bun run db:migrate
    ```
 
 5. **Start the development server**:
    ```bash
-   npm run dev
+   bun run dev
    ```
    Open [http://localhost:3000](http://localhost:3000) in your browser.
 
@@ -156,14 +153,14 @@ panda/
 
 | Script            | Description                                      |
 |-------------------|--------------------------------------------------|
-| `npm run dev`     | Start development server                         |
-| `npm run build`   | Build for production                             |
-| `npm run start`   | Start production server                          |
-| `npm run preview` | Preview production build locally                 |
-| `npm run format`  | Format code with Prettier                        |
-| `npm run db:generate` | Generate Drizzle migrations                  |
-| `npm run db:migrate`  | Apply database migrations                    |
-| `npm run db:studio`   | Open Drizzle Studio (visual DB editor)       |
+| `bun run dev`     | Start development server                         |
+| `bun run build`   | Build for production                             |
+| `bun run start`   | Start production server                          |
+| `bun run preview` | Preview production build locally                 |
+| `bun run format`  | Format code with Prettier                        |
+| `bun run db:generate` | Generate Drizzle migrations                  |
+| `bun run db:migrate`  | Apply database migrations                    |
+| `bun run db:studio`   | Open Drizzle Studio (visual DB editor)       |
 
 ---
 
@@ -189,18 +186,18 @@ Components are stored in `app/components/ui/`.
 ### Generate Migrations
 After modifying `server/db/schema.ts`:
 ```bash
-npm run db:generate
+bun run db:generate
 ```
 
 ### Apply Migrations
 ```bash
-npm run db:migrate
+bun run db:migrate
 ```
 
 ### Visual Editor
 Open Drizzle Studio:
 ```bash
-npm run db:studio
+bun run db:studio
 ```
 
 ---
@@ -211,19 +208,19 @@ npm run db:studio
 
 1. **Build the project**:
    ```bash
-   npm run build
+   bun run build
    ```
 
 2. **Deploy with Wrangler**:
    ```bash
-   npx wrangler deploy
+   bunx wrangler deploy
    ```
 
 3. **Environment Variables**:
    Configure secrets in the Cloudflare dashboard or via Wrangler:
    ```bash
-   npx wrangler secret put DATABASE_URL
-   npx wrangler secret put AUTH_SECRET
+   bunx wrangler secret put DATABASE_URL
+   bunx wrangler secret put AUTH_SECRET
    ```
 
 ### Route Rules (SSR/CSR)
@@ -266,11 +263,11 @@ npm run db:studio
 
 - Run TypeScript checks before shipping:
   ```bash
-  npx nuxt build
+  bun run build
   ```
 - Format code with Prettier:
   ```bash
-  npm run format
+  bun run format
   ```
 - Write unit tests for schema/business utilities.
 - Stub Neon/Cloudflare specifics in tests.
@@ -313,4 +310,4 @@ This project is private and proprietary. All rights reserved.
 
 ---
 
-**Tix4u Panda** - Empowering events with seamless ticketing, payments, and voting.
+**Tix4u tawny** - Empowering events with seamless ticketing, payments, and voting.
