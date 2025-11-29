@@ -109,6 +109,7 @@ export const teams = pgTable("teams", {
     name: varchar("name", { length: 100 }).notNull(),
     slug: varchar("slug", { length: 100 }).notNull().unique(),
     description: varchar("description", { length: 300 }),
+    tags: jsonb("tags").$type<string[]>(),
     banner: uuid("banner").references(() => assets.id, { onDelete: "set null" }),
     logo: uuid("logo").references(() => assets.id, { onDelete: "set null" }),
     createdAt: timestamp("created_at").defaultNow(),

@@ -13,16 +13,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
         return;
     }
 
-    const { user, isAffiliate } = useAuth();
-
-    if (!isAffiliate.value) {
+    if (!useAuth().isAffiliate.value) {
         return navigateTo('/unauthorized');
-    }
-
-    if (!user.value?.affiliate?.verified) {
-        return navigateTo({
-            path: "/onboarding/affiliate",
-            query: { redirect: url },
-        });
     }
 });

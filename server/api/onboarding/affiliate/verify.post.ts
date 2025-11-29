@@ -6,6 +6,7 @@ export default defineEventHandler(async (event) => {
 
   const { token } = await readValidatedBody(event, verifyAffiliateTokenSchema.parse);
 
+  console.log(user, token);
   try {
     const db = useDb();
 
@@ -20,7 +21,6 @@ export default defineEventHandler(async (event) => {
     
     
     if (!affiliateApplication) {
-      console.log("Failed to verify affiliate token:", { token, userId: user.id });
       return createError({ statusCode: 400, statusMessage: 'Invalid token or application not accepted' });
     }
 

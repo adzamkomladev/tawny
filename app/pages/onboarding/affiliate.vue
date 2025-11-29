@@ -7,7 +7,14 @@ import {
 import AffiliateForm from "~/components/onboarding/AffiliateForm.vue";
 
 definePageMeta({
-  layout: 'onboarding'
+  layout: 'onboarding',
+  middleware: [
+    function () {
+      if (useAuth().user.value?.affiliate?.verified) {
+        return navigateTo('/affiliate/home');
+      }
+    },
+  ],
 });
 
 useHead({

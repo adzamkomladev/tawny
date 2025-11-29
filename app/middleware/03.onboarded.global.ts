@@ -15,7 +15,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
         return;
     }
 
-    const { hasRole, needsEvent, needsTeam, isAffiliate } = useAuth();
+    const { user, hasRole, needsEvent, needsTeam, isAffiliate } = useAuth();
 
     if (!hasRole.value) {
         return navigateTo({
@@ -24,7 +24,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
         });
     }
 
-    if (isAffiliate.value && true) {
+    if (isAffiliate.value && !user.value?.affiliate?.verified) {
         return navigateTo({
             path: '/onboarding/affiliate',
             query: { redirect: url },

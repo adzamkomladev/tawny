@@ -8,9 +8,7 @@ definePageMeta({
   layout: 'onboarding',
   middleware: [
     function () {
-      const { needsEvent } = useAuth();
-
-      if (!needsEvent.value) {
+      if (!useAuth().needsEvent.value) {
         return navigateTo('/home');
       }
     },
