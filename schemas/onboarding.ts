@@ -31,3 +31,9 @@ export const onboardingEventSchema = z.object({
 });
 
 export type OnboardingEventForm = z.infer<typeof onboardingEventSchema>;
+
+export const verifyAffiliateTokenSchema = z.object({
+    token: z.string().min(6, 'Token must be at least 6 characters long.'),
+});
+
+export type VerifyAffiliateTokenForm = z.infer<typeof verifyAffiliateTokenSchema>;

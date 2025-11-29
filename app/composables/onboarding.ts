@@ -1,4 +1,4 @@
-import type { OnboardingRoleForm, OnboardingEventForm, OnboardingTeamForm } from "~~/schemas/onboarding";
+import type { OnboardingRoleForm, VerifyAffiliateTokenForm, OnboardingEventForm, OnboardingTeamForm } from "~~/schemas/onboarding";
 
 export const useOnboarding = () => {
   async function createTeam(data: OnboardingTeamForm) {
@@ -43,9 +43,38 @@ export const useOnboarding = () => {
     }
   }
 
+  async function clearRole() {
+    try {
+      const { success } = await $fetch('/api/onboarding/role', {
+        method: 'PATCH',
+      });
+
+      return success;
+    } catch (error) {
+      console.error("Failed to clear role:", error);
+      return false;
+    }
+  }
+
+  async function verifyAffiliateToken(data: VerifyAffiliateTokenForm) {
+    try {
+      const { success } = await $fetch('/api/onboarding/affiliate/verify', {
+        method: 'POST',
+        body: { ...data },
+      });
+
+      return success;
+    } catch (error) {
+      console.error("Failed to verify affiliate token:", error);
+      return false;
+    }
+  }
+
   return {
     createTeam,
     createEvent,
     setRole,
+    clearRole,
+    verifyAffiliateToken,
   }
 }

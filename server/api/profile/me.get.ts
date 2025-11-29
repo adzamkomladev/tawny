@@ -58,7 +58,21 @@ const retrieveUser = async (db: ReturnType<typeof useDb>, userId: string) => {
     where: (users, { eq }) => eq(users.id, userId),
   });
 
-  return user;
+  let affiliateProfile = null;
+
+  if (user?.role === 'affiliate') {
+    const affiliate = await db.query.affiliateApplications.findFirst({
+      where: (affiliateApplications, { eq, and }) => and(
+        eq(affiliateApplications.email, user!.email),
+        eq(affiliateApplications.status, 'verified'),
+      ),
+      columns: { id: true },
+    });
+
+    affiliateProfile = { verified: !!affiliate };
+  }
+
+  return { ...user!, affiliate: affiliateProfile } as ProfileUser;
 }
 
 const retrieveSelected = async (userId: string) => {

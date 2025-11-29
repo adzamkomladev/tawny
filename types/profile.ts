@@ -1,3 +1,7 @@
+export interface AffiliateProfile {
+  verified: boolean;
+}
+
 export interface ProfileUser {
   id: string;
   name: string;
@@ -10,6 +14,7 @@ export interface ProfileUser {
   banExpires: Date | null;
   createdAt: Date | null;
   updatedAt: Date | null;
+  affiliate: AffiliateProfile;
 }
 
 export interface ProfileEvent {

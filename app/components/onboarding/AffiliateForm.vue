@@ -1,37 +1,66 @@
 <script lang="ts" setup>
-import type { HTMLAttributes } from "vue"
+import { useForm } from 'vee-validate';
+import { toTypedSchema } from '@vee-validate/zod';
+import { toast } from 'vue-sonner';
 
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
 import {
   Field,
   FieldDescription,
+  FieldError,
   FieldGroup,
   FieldLabel,
-} from "@/components/ui/field"
+} from "@/components/ui/field";
 import {
   InputOTP,
   InputOTPGroup,
   InputOTPSeparator,
   InputOTPSlot,
 } from "@/components/ui/input-otp";
+import SubmitButton from "@/components/common/forms/SubmitButton.vue";
+import { verifyAffiliateTokenSchema, type VerifyAffiliateTokenForm } from '~~/schemas/onboarding';
 
-const props = defineProps<{
-  class?: HTMLAttributes["class"]
-}>();
+withDefaults(defineProps<{
+  isClearing: boolean;
+}>(), {
+  isClearing: false,
+});
 
-const next = () => navigateTo('/affiliate/home');
+const { handleSubmit, defineField, errors, isSubmitting, meta } = useForm<VerifyAffiliateTokenForm>({
+  validationSchema: toTypedSchema(verifyAffiliateTokenSchema),
+  initialValues: {
+    token: '',
+  },
+});
 
+const [token] = defineField('token');
+
+const onSubmit = handleSubmit(async (payload) => {
+  const res = await useOnboarding().verifyAffiliateToken(payload);
+
+  if (!res) {
+    toast.error('Invalid verification code', {
+      description: 'Please check the code and try again.',
+    });
+    return;
+  }
+
+  toast.success('Verification successful', {
+    description: 'Your affiliate account has been verified.',
+  });
+
+  await useAuth().refreshUser();
+
+  navigateTo('/affiliate/home');
+});
 </script>
 <template>
-  <form :class="cn('flex flex-col gap-6', props.class)">
+  <form class="flex flex-col gap-6" @submit.prevent="onSubmit">
     <FieldGroup>
-
       <Field>
-        <FieldLabel for="otp" class="sr-only">
+        <FieldLabel for="token" class="sr-only">
           Verification code
         </FieldLabel>
-        <InputOTP id="otp" :maxlength="6" required>
+        <InputOTP id="token" v-model="token" :maxlength="6" required>
           <InputOTPGroup class="gap-2 *:data-[slot=input-otp-slot]:rounded-md *:data-[slot=input-otp-slot]:border">
             <InputOTPSlot :index="0" />
             <InputOTPSlot :index="1" />
@@ -50,13 +79,13 @@ const next = () => navigateTo('/affiliate/home');
         <FieldDescription class="text-center">
           Enter the 6-digit code sent to your email or phone number.
         </FieldDescription>
-      </Field>
-      <Field>
-        <Button @click.prevent="next" type="submit">
-          Verify
-        </Button>
+        <FieldError v-if="errors.token">{{ errors.token }}</FieldError>
       </Field>
 
+      <Field>
+        <SubmitButton :disabled="isSubmitting || !meta.valid || isClearing" :loading="isSubmitting" text="Verify"
+          loading-text="Verifying…" />
+      </Field>
     </FieldGroup>
   </form>
 </template>

@@ -13,6 +13,19 @@ definePageMeta({
 useHead({
   title: 'Affiliate Verification'
 });
+
+const isClearing = ref(false);
+
+const clearRole = async () => {
+  isClearing.value = true;
+  const success = await useOnboarding().clearRole();
+  await useAuth().refreshUser();
+  isClearing.value = false;
+
+  if (success) {
+    await navigateTo('/onboarding');
+  }
+}
 </script>
 
 <template>
@@ -29,11 +42,18 @@ useHead({
           Enter the unique affiliate code sent to you.
         </FieldDescription>
       </div>
-      <AffiliateForm />
+      <AffiliateForm :is-clearing="isClearing" />
     </FieldGroup>
     <FieldDescription class="px-6 text-center">
       By verifying, you agree to our Affiliate <a href="#">Terms of Service</a>
       and <a href="#">Privacy Policy</a>.
     </FieldDescription>
+    <div class="text-center">
+      <Button class="cursor-pointer" variant="link" :disabled="isClearing" @click="clearRole">
+        <Icon v-if="isClearing" name="lucide:loader-2" class="animate-spin" />
+        <Icon v-else name="lucide:arrow-left" />
+        Choose a different role
+      </Button>
+    </div>
   </div>
 </template>

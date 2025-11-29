@@ -5,13 +5,12 @@ const user = ref<AuthProfile | null>(null);
 export const useAuth = () => {
   const hasRole = computed(() => !!user.value?.role);
   const isAffiliate = computed(() => user.value?.role === 'affiliate');
+  const isOrganizer = computed(() => user.value?.role === 'organizer');
   const needsTeam = computed(() => {
-    const isOrganizer = user.value?.role === 'organizer';
-    return isOrganizer && user.value?.teams.length === 0;
+    return isOrganizer.value && user.value?.teams.length === 0;
   });
   const needsEvent = computed(() => {
-    const isOrganizer = user.value?.role === 'organizer';
-    const hasSelectedTeam = isOrganizer && !!user.value?.selected?.teamId;
+    const hasSelectedTeam = isOrganizer.value && !!user.value?.selected?.teamId;
     const team = user.value?.teams.find(team => team.id === user.value?.selected?.teamId);
     return hasSelectedTeam && team ? team.events.length === 0 : false;
   });
@@ -48,6 +47,7 @@ export const useAuth = () => {
     needsTeam,
     needsEvent,
     isAffiliate,
+    isOrganizer,
     refreshUser,
     clearUser,
     logout,
