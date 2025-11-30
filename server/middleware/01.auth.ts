@@ -2,6 +2,7 @@ const authenticatedRoutes = [
   { path: "/api/assets", exact: false },
   { path: "/api/onboarding", exact: false },
   { path: '/api/profile', exact: false },
+  { path: '/api/affiliate', exact: false },
 ];
 
 export default defineEventHandler(async (event) => {

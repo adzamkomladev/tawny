@@ -40,6 +40,7 @@ export const sessions = pgTable("sessions", {
     userId: uuid("user_id")
         .notNull()
         .references(() => users.id, { onDelete: "cascade" }),
+    impersonatedBy: uuid("impersonated_by").references(() => users.id, { onDelete: "set null" }),
     createdAt: timestamp("created_at").notNull(),
     updatedAt: timestamp("updated_at").notNull(),
 });

@@ -1,6 +1,6 @@
 import { type EventHandlerRequest, type H3Event } from "h3";
 import { betterAuth, BetterAuthOptions } from "better-auth";
-import { customSession } from "better-auth/plugins";
+import { customSession, admin } from "better-auth/plugins";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { EmailTemplate } from "~~/types/email";
 import { tables, useDb } from "./db";
@@ -27,6 +27,7 @@ function createAuthOptions(): BetterAuthOptions {
       },
     },
     emailVerification: {
+      sendOnSignUp: true,
       sendVerificationEmail: async ({ user, url, token }, request) => {
         await sendTemplatedEmail(
           { name: user.name || "User", email: user.email },
@@ -54,7 +55,11 @@ function createAuthOptions(): BetterAuthOptions {
         generateId: false,
       },
     },
-    plugins: [],
+    plugins: [
+      admin({
+        adminRoles: ["admin", "affiliate"],
+      })
+    ],
   };
 }
 
