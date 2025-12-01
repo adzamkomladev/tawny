@@ -1,32 +1,21 @@
-import type { EventHandler, EventHandlerRequest, H3Event } from 'h3'
-import { Queues } from './../../types/queues';
+import type { H3Event } from 'h3'
 import type { Queue } from '@cloudflare/workers-types/experimental';
-
-export const defineWrappedResponseHandler = <T extends EventHandlerRequest, D> (
-  handler: EventHandler<T, D>
-): EventHandler<T, D> =>
-    defineEventHandler<T>(async (event) => {
-      try {
-        const response = await handler(event)
-        return { response }
-      } catch (err) {
-      // Error handling
-        return { err }
-      }
-    })
+import { Queues } from './../../types/queues';
 
 
-export const useQueue = <T>(event: H3Event, queue: Queues) => {
+export const useQueue = <T>(queue: Queues, event?: H3Event) => {
+  const queueHandle = event ? event?.context.cloudflare.env : globalThis?.__env__;
 
-  const { cloudflare } = event.context;
+  if (!queueHandle) {
+    throw new Error('Cloudflare environment bindings are not available.');
+  }
 
   if (queue === Queues.Emails) {
-    console.log("Using Email Queue", globalThis?.__env__?.EMAILS_QUEUE);
-    return cloudflare.env.EMAILS_QUEUE as Queue<T>;
+    return queueHandle.EMAILS_QUEUE as Queue<T>;
   }
 
   if (queue === Queues.Sms) {
-    return cloudflare.env.SMS_QUEUE as Queue<T>;
+    return queueHandle.SMS_QUEUE as Queue<T>;
   }
 
   throw new Error(`Unknown queue: ${queue}`);

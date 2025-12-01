@@ -1,9 +1,8 @@
-import { EmailTemplate } from "../../types/email";
-import { EmailsPayload, Queues } from "../../types/queues"
-import { useQueue } from "../utils/queues"
+import { EmailTemplate } from "~~/types/email";
+import { EmailsPayload, Queues } from "~~/types/queues"
 
 export default defineEventHandler(async (event) => {
-  const emailsQueue = useQueue<EmailsPayload>(event, Queues.Emails);
+  const emailsQueue = useQueue<EmailsPayload>(Queues.Emails, event);
 
   await emailsQueue.send({
     to: { email: "kilu@yopmail.com", name: "Kilu" },
