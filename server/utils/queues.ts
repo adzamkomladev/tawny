@@ -21,11 +21,12 @@ export const useQueue = <T>(event: H3Event, queue: Queues) => {
   const { cloudflare } = event.context;
 
   if (queue === Queues.Emails) {
-    return cloudflare.env.EMAIL_QUEUE as Queue<T>;
+    console.log("Using Email Queue", globalThis?.__env__?.EMAILS_QUEUE);
+    return cloudflare.env.EMAILS_QUEUE as Queue<T>;
   }
 
   if (queue === Queues.Sms) {
-    return cloudflare.env.SMS_QUEUE as Queue;
+    return cloudflare.env.SMS_QUEUE as Queue<T>;
   }
 
   throw new Error(`Unknown queue: ${queue}`);
