@@ -58,6 +58,12 @@ export default defineNuxtConfig({
       queue: {
         NOTIFICATIONS_QUEUE: {
           queue_name: "notifications",
+        },
+        EMAILS_QUEUE: {
+          queue_name: "emails",
+        },
+        SMS_QUEUE: {
+          queue_name: "sms",
         }
       },
     },
