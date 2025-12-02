@@ -1,5 +1,6 @@
 import { applySchema } from '~~/schemas/affiliates';
-import { EmailTemplate } from '../../../types/email';
+import { EmailTemplate } from '~~/types/email';
+import { EmailsPayload, Queues, SmsPayload } from '~~/types/queues';
 
 export default defineEventHandler(async (event) => {
   const { name, email, phone, reason, acceptTerms } = await readValidatedBody(
@@ -54,13 +55,16 @@ export default defineEventHandler(async (event) => {
 
     try {
       await Promise.all([
-        sendTemplatedEmail(
-          { name, email },
-          "Affiliate Application Received",
-          EmailTemplate.AFFILIATE_APPLICATION_ACKNOWLEDGEMENT,
-          { name }
-        ),
-        sendSms([phone], "Thank you for your affiliate application. We will review it and get back to you shortly.")
+        useQueue<EmailsPayload>(Queues.Emails, event).send({
+          to: { name, email },
+          subject: "Affiliate Application Received",
+          templateId: EmailTemplate.AFFILIATE_APPLICATION_ACKNOWLEDGEMENT,
+          data: { name }
+        }),
+        useQueue<SmsPayload>(Queues.Sms, event).send({
+          recipients: [phone],
+          message: "Thank you for your affiliate application. We will review it and get back to you shortly."
+        })
       ]);
     } catch (error) {
       console.error("Failed to send affiliate application confirmation:", error);

@@ -3,8 +3,10 @@ import { betterAuth, BetterAuthOptions } from "better-auth";
 import { customSession, admin } from "better-auth/plugins";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { EmailTemplate } from "~~/types/email";
+import { EmailsPayload, Queues } from "~~/types/queues";
 import { tables, useDb } from "./db";
 import { sendTemplatedEmail } from "./email";
+import { useQueue } from "./queues";
 
 function createAuthOptions(): BetterAuthOptions {
   return {
@@ -18,23 +20,23 @@ function createAuthOptions(): BetterAuthOptions {
     emailAndPassword: {
       enabled: true,
       sendResetPassword: async ({ user, url, token }, request) => {
-        await sendTemplatedEmail(
-          { name: user.name || "User", email: user.email },
-          "Reset your password",
-          EmailTemplate.RESET_PASSWORD,
-          { name: user.name || "User", resetLink: url }
-        );
+        await useQueue<EmailsPayload>(Queues.Emails).send({
+          to: { name: user.name || "User", email: user.email },
+          subject: "Reset your password",
+          templateId: EmailTemplate.RESET_PASSWORD,
+          data: { name: user.name || "User", resetLink: url }
+        });
       },
     },
     emailVerification: {
       sendOnSignUp: true,
       sendVerificationEmail: async ({ user, url, token }, request) => {
-        await sendTemplatedEmail(
-          { name: user.name || "User", email: user.email },
-          "Verify your email address",
-          EmailTemplate.EMAIL_VERIFICATION,
-          { name: user.name || "User", verificationLink: url }
-        );
+        await useQueue<EmailsPayload>(Queues.Emails).send({
+          to: { name: user.name || "User", email: user.email },
+          subject: "Verify your email address",
+          templateId: EmailTemplate.EMAIL_VERIFICATION,
+          data: { name: user.name || "User", verificationLink: url }
+        });
       },
     },
     socialProviders: {

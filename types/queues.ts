@@ -1,3 +1,5 @@
+import type { EmailTemplate } from "~~/types/email";
+
 export enum Queues {
     Emails = 'emails',
     Sms = 'sms',

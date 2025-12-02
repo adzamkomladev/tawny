@@ -6,7 +6,6 @@ export default defineEventHandler(async (event) => {
 
   const { token } = await readValidatedBody(event, verifyAffiliateTokenSchema.parse);
 
-  console.log(user, token);
   try {
     const db = useDb();
 

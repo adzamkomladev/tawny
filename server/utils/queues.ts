@@ -1,6 +1,6 @@
 import type { H3Event } from 'h3'
 import type { Queue } from '@cloudflare/workers-types/experimental';
-import { Queues } from './../../types/queues';
+import { Queues } from '~~/types/queues';
 
 
 export const useQueue = <T>(queue: Queues, event?: H3Event) => {

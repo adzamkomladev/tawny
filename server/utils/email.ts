@@ -4,7 +4,7 @@ import { EmailTemplate } from '~~/types/email';
 const client = new MailerooClient(process.env.MAILEROO_API_KEY as string);
 
 export const sendTemplatedEmail = async (
-  recipient: { email: string; name: string },
+  recipient: { email: string; name?: string },
   subject: string,
   templateId: EmailTemplate,
   data?: Record<string, any>,
