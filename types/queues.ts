@@ -11,6 +11,6 @@ export interface EmailsPayload {
 }
 
 export interface SmsPayload {
-    to: string[];
+    recipients: string[];
     message: string;
 }
