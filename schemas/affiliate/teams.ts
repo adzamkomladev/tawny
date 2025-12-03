@@ -1,5 +1,13 @@
 import * as z from 'zod';
 
+// Query schema for listing teams
+export const listTeamsQuerySchema = z.object({
+    page: z.coerce.number().int().min(1).default(1),
+    size: z.coerce.number().int().min(1).max(100).default(10),
+    search: z.string().trim().optional().default(''),
+});
+
+export type ListTeamsQuery = z.infer<typeof listTeamsQuerySchema>;
 
 export const fileSchema = z.custom<File | null>((val) => {
     if (!val) return false;

@@ -5,7 +5,6 @@ import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { EmailTemplate } from "~~/types/email";
 import { EmailsPayload, Queues } from "~~/types/queues";
 import { tables, useDb } from "./db";
-import { sendTemplatedEmail } from "./email";
 import { useQueue } from "./queues";
 
 function createAuthOptions(): BetterAuthOptions {
@@ -58,9 +57,7 @@ function createAuthOptions(): BetterAuthOptions {
       },
     },
     plugins: [
-      admin({
-        adminRoles: ["admin", "affiliate"],
-      })
+      admin({ adminRoles: ["admin", "affiliate"] })
     ],
   };
 }
@@ -91,7 +88,7 @@ export const auth = new Proxy({} as ReturnType<typeof betterAuth>, {
   }
 });
 
-export type Session = typeof auth.$Infer.Session;
+export type Session = typeof auth.$Infer.Session & { user: { selected?: { teamId: string | null, eventId: string | null } | null, role?: string | null } };
 
 /**
  * Get the current session if authenticated, otherwise returns null

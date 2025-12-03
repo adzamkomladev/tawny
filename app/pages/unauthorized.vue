@@ -1,20 +1,14 @@
 <script lang="ts" setup>
 import { Button } from '@/components/ui/button';
 
-useSeoMeta({
-  title: 'Unauthorized - Tix4u',
-  description: 'You do not have permission to access this page.',
-});
-
 definePageMeta({
   layout: 'auth',
 });
+useHead({
+  title: 'Unauthorized Access'
+});
 
-const router = useRouter();
-
-const goBack = () => {
-  router.back();
-};
+const goBack = () => useRouter().back();
 </script>
 
 <template>
@@ -36,9 +30,11 @@ const goBack = () => {
           <Icon name="lucide:arrow-left" class="mr-2 size-4" />
           Go Back
         </Button>
-        <Button as="a" href="/login">
-          <Icon name="lucide:log-in" class="mr-2 size-4" />
-          Sign In
+        <Button as-child>
+          <NuxtLink to="/login">
+            <Icon name="lucide:log-in" class="mr-2 size-4" />
+            Sign In
+          </NuxtLink>
         </Button>
       </div>
     </div>

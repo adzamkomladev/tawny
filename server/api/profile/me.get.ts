@@ -2,7 +2,7 @@ import { AuthProfile, ProfileTeam, ProfileUser } from '~~/types/profile';
 
 export default defineEventHandler(async (event) => {
   const { user } = getCurrentAuth(event)!;
-  
+  console.log("Fetching profile for user:", user);
   try {
     const authProfile = await retrieveAuthProfile(user.id);
 
