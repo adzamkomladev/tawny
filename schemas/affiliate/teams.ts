@@ -57,3 +57,37 @@ export const createTeamSchema = z.object({
 });
 
 export type CreateTeamPayload = z.infer<typeof createTeamSchema>;
+
+export const updateTeamFormSchema = z.object({
+    logo: optionalFileSchema,
+    banner: optionalFileSchema,
+    name: z.string().min(2, 'Give your team a friendly display name.'),
+    slug: z
+        .string()
+        .min(2, 'Add at least two characters.')
+        .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, 'Only lowercase letters, numbers, and dashes.'),
+    description: z
+        .string()
+        .min(24, 'Share a short narrative so reviewers understand the intent.'),
+    tags: z.array(z.string()).min(1, 'Add at least one tag to categorize your team.').max(5, 'Maximum of 5 tags allowed.'),
+});
+
+export type UpdateTeamForm = z.infer<typeof updateTeamFormSchema>;
+
+export const updateTeamSchema = z.object({
+    logoAssetId: z.string().uuid('Invalid logo asset ID').optional().nullable(),
+    bannerAssetId: z.string().uuid('Invalid banner asset ID').optional().nullable(),
+    name: z.string().min(2, 'Give your team a friendly display name.').optional(),
+    slug: z
+        .string()
+        .min(2, 'Add at least two characters.')
+        .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, 'Only lowercase letters, numbers, and dashes.')
+        .optional(),
+    description: z
+        .string()
+        .min(24, 'Share a short narrative so reviewers understand the intent.')
+        .optional(),
+    tags: z.array(z.string()).min(1, 'Add at least one tag.').max(5, 'Maximum of 5 tags.').optional(),
+});
+
+export type UpdateTeamPayload = z.infer<typeof updateTeamSchema>;
