@@ -24,13 +24,12 @@ const props = withDefaults(defineProps<SidebarProps>(), {
 });
 
 const { affiliateNavLinks, teams } = useNav();
-const { user } = useAuth();
 </script>
 
 <template>
   <Sidebar v-bind="props">
     <SidebarHeader>
-      <TeamSwitcher :teams="[...teams]" />
+      <TeamSwitcher />
     </SidebarHeader>
     <SidebarContent>
       <SidebarGroup>
@@ -50,7 +49,7 @@ const { user } = useAuth();
       <NavPlatform :platforms="[...affiliateNavLinks.platform]" />
     </SidebarContent>
     <SidebarFooter>
-      <NavUser :user="user!" />
+      <NavUser />
     </SidebarFooter>
     <SidebarRail />
   </Sidebar>

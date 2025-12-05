@@ -34,3 +34,9 @@ export const resetPasswordSchema = z.object({
 });
 
 export type ResetPasswordForm = z.infer<typeof resetPasswordSchema>;
+
+export const switchEventSchema = z.object({
+    eventId: z.uuid("Invalid event ID"),
+});
+
+export type SwitchEventInput = z.infer<typeof switchEventSchema>;

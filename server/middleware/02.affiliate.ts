@@ -1,5 +1,5 @@
 const affiliateRoutes = [
-  { path: '/api/affiliate', exact: false },
+  { path: '/api/affiliate/', exact: false },
 ];
 
 export default defineEventHandler(async (event) => {

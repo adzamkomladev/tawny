@@ -1,4 +1,5 @@
 import type { AuthProfile } from "~~/types/profile";
+import type { SwitchEventInput } from "../../schemas/auth";
 
 const user = ref<AuthProfile | null>(null);
 
@@ -41,6 +42,22 @@ export const useAuth = () => {
     navigateTo("/login");
   }
 
+  async function switchEvent(data: SwitchEventInput) {
+    try {
+      const { success } = await $fetch('/api/profile/events/switch', {
+        method: 'POST',
+        body: { ...data },
+      });
+
+      await refreshUser();
+
+      return { success: true, error: null };
+    } catch (error: any) {
+      console.error("Failed to switch event:", error);
+      return { success: false, error: error.message || error.statusMessage || 'Failed to switch event' };
+    }
+  }
+
   return {
     user: readonly(user),
     hasRole,
@@ -51,5 +68,6 @@ export const useAuth = () => {
     refreshUser,
     clearUser,
     logout,
+    switchEvent,
   };
 }

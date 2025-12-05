@@ -2,7 +2,6 @@ import { AuthProfile, ProfileTeam, ProfileUser } from '~~/types/profile';
 
 export default defineEventHandler(async (event) => {
   const { user } = getCurrentAuth(event)!;
-  console.log("Fetching profile for user:", user);
   try {
     const authProfile = await retrieveAuthProfile(user.id);
 
@@ -16,10 +15,7 @@ export default defineEventHandler(async (event) => {
 
 const retrieveTeam = async (db: ReturnType<typeof useDb>, userId: string) => {
   const teams = await db.query.teams.findMany({
-    where: (teams, { eq, and, or }) => and(
-      eq(teams.ownerId, userId),
-      or(eq(teams.affiliateId, userId), eq(teams.ownerId, userId))
-    ),
+    where: (teams, { eq, or }) => or(eq(teams.affiliateId, userId), eq(teams.ownerId, userId)),
     columns: {
       id: true,
       ownerId: true,
@@ -78,7 +74,6 @@ const retrieveUser = async (db: ReturnType<typeof useDb>, userId: string) => {
 const retrieveSelected = async (userId: string) => {
   const key = `user:${userId}:selected`;
   const selected = await hubKV().get<{ teamId: string | null, eventId: string | null }>(key);
-
   return selected;
 };
 

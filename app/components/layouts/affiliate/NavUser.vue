@@ -19,12 +19,10 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from '@/components/ui/sidebar'
-
-defineProps<{
-  user: User
-}>()
+import type { ProfileUser } from '~~/types/profile';
 
 const { isMobile } = useSidebar();
+const { user, logout } = useAuth();
 </script>
 
 <template>
@@ -35,14 +33,14 @@ const { isMobile } = useSidebar();
           <SidebarMenuButton size="lg"
             class="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground">
             <Avatar class="h-8 w-8 rounded-lg">
-              <AvatarImage :src="user.image!" :alt="user.name" />
+              <AvatarImage :src="user?.image!" :alt="user?.name" />
               <AvatarFallback class="rounded-lg">
                 CN
               </AvatarFallback>
             </Avatar>
             <div class="grid flex-1 text-left text-sm leading-tight">
-              <span class="truncate font-medium">{{ user.name }}</span>
-              <span class="truncate text-xs">{{ user.email }}</span>
+              <span class="truncate font-medium">{{ user?.name }}</span>
+              <span class="truncate text-xs">{{ user?.email }}</span>
             </div>
             <Icon name="lucide:chevrons-up-down" class="ml-auto size-4" />
           </SidebarMenuButton>
@@ -52,14 +50,14 @@ const { isMobile } = useSidebar();
           <DropdownMenuLabel class="p-0 font-normal">
             <div class="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
               <Avatar class="h-8 w-8 rounded-lg">
-                <AvatarImage :src="user.image!" :alt="user.name" />
+                <AvatarImage :src="user?.image!" :alt="user?.name" />
                 <AvatarFallback class="rounded-lg">
                   CN
                 </AvatarFallback>
               </Avatar>
               <div class="grid flex-1 text-left text-sm leading-tight">
-                <span class="truncate font-semibold">{{ user.name }}</span>
-                <span class="truncate text-xs">{{ user.email }}</span>
+                <span class="truncate font-semibold">{{ user?.name }}</span>
+                <span class="truncate text-xs">{{ user?.email }}</span>
               </div>
             </div>
           </DropdownMenuLabel>
@@ -86,7 +84,7 @@ const { isMobile } = useSidebar();
             </DropdownMenuItem>
           </DropdownMenuGroup>
           <DropdownMenuSeparator />
-          <DropdownMenuItem class="cursor-pointer" @click.prevent="useAuth().logout">
+          <DropdownMenuItem class="cursor-pointer" @click.prevent="logout">
             <Icon name="lucide:log-out" />
             Log out
           </DropdownMenuItem>
