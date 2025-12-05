@@ -2,7 +2,7 @@
 import type { TicketSale } from '@/components/affiliate/events/tickets/SalesTable.vue'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-
+import SalesStatCard from '~/components/affiliate/events/tickets/SalesStatCard.vue'
 definePageMeta({
   layout: 'affiliate'
 })
@@ -160,7 +160,7 @@ function handleProcessRefund(sale: TicketSale) {
   <div class="flex flex-1 flex-col gap-6 p-4 pt-0">
     <!-- Stats Grid -->
     <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-      <AffiliateEventsTicketsSalesStatCard v-for="stat in stats" :key="stat.title" :stat="stat" />
+      <SalesStatCard v-for="stat in stats" :key="stat.title" :stat="stat" />
     </div>
 
     <!-- Sales Table Card -->
