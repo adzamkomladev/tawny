@@ -136,7 +136,7 @@ export const events = pgTable("events", {
     logo: uuid("logo").references(() => assets.id, { onDelete: "set null" }),
     banner: uuid("banner").references(() => assets.id, { onDelete: "set null" }),
     poster: uuid("poster").references(() => assets.id, { onDelete: "set null" }),
-    gallery: jsonb("gallery").$type<{ picture: string, caption: string, order: number }[]>(),
+    gallery: jsonb("gallery").$type<{ picture: string, caption: string, order: number, isFeatured: boolean }[]>(),
     venue: varchar("venue", { length: 500 }),
     startDate: timestamp("start_date"),
     endDate: timestamp("end_date"),

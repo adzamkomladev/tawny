@@ -1,7 +1,14 @@
 <script lang="ts" setup>
+import NewEventForm from '@/components/affiliate/events/new/Form.vue';
+
 definePageMeta({
-  layout: 'affiliate'
+  layout: 'affiliate',
 });
+
+useHead({
+  title: 'New Event',
+});
+
 useBreadcrumb().setBreadcrumbs([
   { text: 'Home', url: '/affiliate/home' },
   { text: 'New Event', url: '/affiliate/events/new' },
@@ -9,12 +16,14 @@ useBreadcrumb().setBreadcrumbs([
 </script>
 
 <template>
-  <div class="flex flex-1 flex-col gap-4 p-4 pt-0">
-    <div class="grid auto-rows-min gap-4 md:grid-cols-3">
-      <div class="bg-muted/50 aspect-video rounded-xl" />
-      <div class="bg-muted/50 aspect-video rounded-xl" />
-      <div class="bg-muted/50 aspect-video rounded-xl" />
+  <div class="mx-auto max-w-4xl flex-1 space-y-8 p-8 pt-6">
+    <div class="space-y-2">
+      <h1 class="text-3xl font-bold tracking-tight text-foreground">Create event</h1>
+      <p class="text-muted-foreground">
+        Set up a new event with ticketing, payments, and live voting capabilities.
+      </p>
     </div>
-    <div class="bg-muted/50 min-h-screen flex-1 rounded-xl md:min-h-min" />
+
+    <NewEventForm />
   </div>
 </template>
