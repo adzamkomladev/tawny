@@ -158,14 +158,6 @@ function handleProcessRefund(sale: TicketSale) {
 
 <template>
   <div class="flex flex-1 flex-col gap-6 p-4 pt-0">
-    <!-- Page Header -->
-    <div class="flex flex-col gap-1">
-      <h1 class="text-2xl font-semibold tracking-tight">Ticket Sales</h1>
-      <p class="text-muted-foreground text-sm">
-        View and manage all ticket purchases for this event
-      </p>
-    </div>
-
     <!-- Stats Grid -->
     <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
       <AffiliateEventsTicketsSalesStatCard v-for="stat in stats" :key="stat.title" :stat="stat" />

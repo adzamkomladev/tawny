@@ -202,137 +202,125 @@ const calculateTicketProfit = (ticket: typeof ticketTypes.value[0]) => {
 </script>
 
 <template>
-  <div class="flex flex-1 flex-col gap-6 p-4 pt-0">
-    <!-- Page Header -->
-    <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-      <div>
-        <h1 class="text-2xl font-semibold tracking-tight">Tickets Overview</h1>
-        <p class="text-muted-foreground text-sm">
-          Monitor sales, revenue, and manage your event tickets
-        </p>
+  <div class="px-5 py-6 space-y-8">
+    <div class="grid gap-2 sm:grid-cols-2">
+
+      <!-- Stats Grid: 2x2 -->
+      <div class="grid gap-4 sm:grid-cols-2">
+        <!-- Total Tickets -->
+        <Card>
+          <CardHeader class="flex flex-row items-center justify-between pb-2">
+            <CardTitle class="text-sm font-medium text-muted-foreground">Total Tickets</CardTitle>
+            <div class="rounded-md bg-primary/10 p-2">
+              <Icon name="lucide:ticket" class="size-4 text-primary" />
+            </div>
+          </CardHeader>
+          <CardContent>
+            <div class="text-3xl font-bold">{{ stats.totalTickets.toLocaleString() }}</div>
+            <p class="text-xs text-muted-foreground mt-1">
+              Across {{ ticketTypes.length }} ticket types
+            </p>
+          </CardContent>
+        </Card>
+
+        <!-- Sold Tickets -->
+        <Card>
+          <CardHeader class="flex flex-row items-center justify-between pb-2">
+            <CardTitle class="text-sm font-medium text-muted-foreground">Sold Tickets</CardTitle>
+            <div class="rounded-md bg-chart-2/10 p-2">
+              <Icon name="lucide:users" class="size-4 text-chart-2" />
+            </div>
+          </CardHeader>
+          <CardContent>
+            <div class="text-3xl font-bold">{{ stats.soldTickets.toLocaleString() }}</div>
+            <div class="flex items-center gap-2 mt-1">
+              <Progress :model-value="(stats.soldTickets / stats.totalTickets) * 100" class="h-1.5" />
+              <span class="text-xs text-muted-foreground">
+                {{ Math.round((stats.soldTickets / stats.totalTickets) * 100) }}%
+              </span>
+            </div>
+          </CardContent>
+        </Card>
+
+        <!-- Ticket Revenue -->
+        <Card>
+          <CardHeader class="flex flex-row items-center justify-between pb-2">
+            <CardTitle class="text-sm font-medium text-muted-foreground">Ticket Revenue</CardTitle>
+            <div class="rounded-md bg-chart-3/10 p-2">
+              <Icon name="lucide:banknote" class="size-4 text-chart-3" />
+            </div>
+          </CardHeader>
+          <CardContent>
+            <div class="text-3xl font-bold">{{ formatCurrency(stats.ticketRevenue) }}</div>
+            <p class="text-xs text-muted-foreground mt-1">
+              <span class="text-green-600 dark:text-green-400 font-medium">↑ 12.5%</span> from last week
+            </p>
+          </CardContent>
+        </Card>
+
+        <!-- Earnings -->
+        <Card>
+          <CardHeader class="flex flex-row items-center justify-between pb-2">
+            <CardTitle class="text-sm font-medium text-muted-foreground">Your Earnings</CardTitle>
+            <div class="rounded-md bg-chart-4/10 p-2">
+              <Icon name="lucide:wallet" class="size-4 text-chart-4" />
+            </div>
+          </CardHeader>
+          <CardContent>
+            <div class="text-3xl font-bold">{{ formatCurrency(stats.earnings) }}</div>
+            <p class="text-xs text-muted-foreground mt-1">
+              20% affiliate commission
+            </p>
+          </CardContent>
+        </Card>
       </div>
-      <Button @click="openCreateSheet" class="gap-2">
-        <Icon name="lucide:plus" class="size-4" />
-        Create Ticket
-      </Button>
-    </div>
 
-    <!-- Stats Grid: 2x2 -->
-    <div class="grid gap-4 sm:grid-cols-2">
-      <!-- Total Tickets -->
+      <!-- Sales Chart -->
       <Card>
-        <CardHeader class="flex flex-row items-center justify-between pb-2">
-          <CardTitle class="text-sm font-medium text-muted-foreground">Total Tickets</CardTitle>
-          <div class="rounded-md bg-primary/10 p-2">
-            <Icon name="lucide:ticket" class="size-4 text-primary" />
+        <CardHeader class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <CardTitle>Sales Analytics</CardTitle>
+            <CardDescription>
+              Track ticket sales and revenue over time
+            </CardDescription>
           </div>
+          <Tabs v-model="chartPeriod" class="w-auto">
+            <TabsList class="h-8">
+              <TabsTrigger value="hourly" class="text-xs px-3">Hourly</TabsTrigger>
+              <TabsTrigger value="daily" class="text-xs px-3">Daily</TabsTrigger>
+              <TabsTrigger value="monthly" class="text-xs px-3">Monthly</TabsTrigger>
+            </TabsList>
+          </Tabs>
         </CardHeader>
-        <CardContent>
-          <div class="text-3xl font-bold">{{ stats.totalTickets.toLocaleString() }}</div>
-          <p class="text-xs text-muted-foreground mt-1">
-            Across {{ ticketTypes.length }} ticket types
-          </p>
-        </CardContent>
-      </Card>
-
-      <!-- Sold Tickets -->
-      <Card>
-        <CardHeader class="flex flex-row items-center justify-between pb-2">
-          <CardTitle class="text-sm font-medium text-muted-foreground">Sold Tickets</CardTitle>
-          <div class="rounded-md bg-chart-2/10 p-2">
-            <Icon name="lucide:users" class="size-4 text-chart-2" />
-          </div>
-        </CardHeader>
-        <CardContent>
-          <div class="text-3xl font-bold">{{ stats.soldTickets.toLocaleString() }}</div>
-          <div class="flex items-center gap-2 mt-1">
-            <Progress :model-value="(stats.soldTickets / stats.totalTickets) * 100" class="h-1.5" />
-            <span class="text-xs text-muted-foreground">
-              {{ Math.round((stats.soldTickets / stats.totalTickets) * 100) }}%
-            </span>
-          </div>
-        </CardContent>
-      </Card>
-
-      <!-- Ticket Revenue -->
-      <Card>
-        <CardHeader class="flex flex-row items-center justify-between pb-2">
-          <CardTitle class="text-sm font-medium text-muted-foreground">Ticket Revenue</CardTitle>
-          <div class="rounded-md bg-chart-3/10 p-2">
-            <Icon name="lucide:banknote" class="size-4 text-chart-3" />
-          </div>
-        </CardHeader>
-        <CardContent>
-          <div class="text-3xl font-bold">{{ formatCurrency(stats.ticketRevenue) }}</div>
-          <p class="text-xs text-muted-foreground mt-1">
-            <span class="text-green-600 dark:text-green-400 font-medium">↑ 12.5%</span> from last week
-          </p>
-        </CardContent>
-      </Card>
-
-      <!-- Earnings -->
-      <Card>
-        <CardHeader class="flex flex-row items-center justify-between pb-2">
-          <CardTitle class="text-sm font-medium text-muted-foreground">Your Earnings</CardTitle>
-          <div class="rounded-md bg-chart-4/10 p-2">
-            <Icon name="lucide:wallet" class="size-4 text-chart-4" />
-          </div>
-        </CardHeader>
-        <CardContent>
-          <div class="text-3xl font-bold">{{ formatCurrency(stats.earnings) }}</div>
-          <p class="text-xs text-muted-foreground mt-1">
-            20% affiliate commission
-          </p>
+        <CardContent class="pt-0">
+          <ChartContainer :config="chartConfig" class="h-[300px] w-full">
+            <VisBulletLegend :items="[
+              { name: 'Tickets Sold', color: 'var(--primary)' },
+              { name: 'Revenue', color: 'var(--chart-2)' }
+            ]" />
+            <VisXYContainer :data="chartData" :margin="{ top: 20, right: 20, bottom: 30, left: 50 }">
+              <VisArea :x="(_: any, i: number) => i" :y="(d: any) => d.sales" color="var(--primary)" :opacity="0.15"
+                curve-type="monotone" />
+              <VisLine :x="(_: any, i: number) => i" :y="(d: any) => d.sales" color="var(--primary)" :line-width="2"
+                curve-type="monotone" />
+              <VisArea :x="(_: any, i: number) => i" :y="(d: any) => d.revenue / 50" color="var(--chart-2)"
+                :opacity="0.1" curve-type="monotone" />
+              <VisLine :x="(_: any, i: number) => i" :y="(d: any) => d.revenue / 50" color="var(--chart-2)"
+                :line-width="2" curve-type="monotone" />
+              <VisAxis type="x" :tick-format="(i: number) => chartData[i]?.time ?? ''" :grid-line="false" />
+              <VisAxis type="y" :grid-line="true" />
+              <ChartCrosshair color="var(--primary)" :opacity="0.3" />
+              <ChartTooltip :render="componentToString(chartConfig, ChartTooltipContent, {
+                labelFormatter: (d: number | Date) => {
+                  const i = typeof d === 'number' ? d : 0
+                  return chartData[i]?.time ?? ''
+                }
+              })" />
+            </VisXYContainer>
+          </ChartContainer>
         </CardContent>
       </Card>
     </div>
-
-    <!-- Sales Chart -->
-    <Card>
-      <CardHeader class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <CardTitle>Sales Analytics</CardTitle>
-          <CardDescription>
-            Track ticket sales and revenue over time
-          </CardDescription>
-        </div>
-        <Tabs v-model="chartPeriod" class="w-auto">
-          <TabsList class="h-8">
-            <TabsTrigger value="hourly" class="text-xs px-3">Hourly</TabsTrigger>
-            <TabsTrigger value="daily" class="text-xs px-3">Daily</TabsTrigger>
-            <TabsTrigger value="monthly" class="text-xs px-3">Monthly</TabsTrigger>
-          </TabsList>
-        </Tabs>
-      </CardHeader>
-      <CardContent class="pt-0">
-        <ChartContainer :config="chartConfig" class="h-[300px] w-full">
-          <VisBulletLegend :items="[
-            { name: 'Tickets Sold', color: 'var(--primary)' },
-            { name: 'Revenue', color: 'var(--chart-2)' }
-          ]" />
-          <VisXYContainer :data="chartData" :margin="{ top: 20, right: 20, bottom: 30, left: 50 }">
-            <VisArea :x="(_: any, i: number) => i" :y="(d: any) => d.sales" color="var(--primary)" :opacity="0.15"
-              curve-type="monotone" />
-            <VisLine :x="(_: any, i: number) => i" :y="(d: any) => d.sales" color="var(--primary)" :line-width="2"
-              curve-type="monotone" />
-            <VisArea :x="(_: any, i: number) => i" :y="(d: any) => d.revenue / 50" color="var(--chart-2)" :opacity="0.1"
-              curve-type="monotone" />
-            <VisLine :x="(_: any, i: number) => i" :y="(d: any) => d.revenue / 50" color="var(--chart-2)"
-              :line-width="2" curve-type="monotone" />
-            <VisAxis type="x" :tick-format="(i: number) => chartData[i]?.time ?? ''" :grid-line="false" />
-            <VisAxis type="y" :grid-line="true" />
-            <ChartCrosshair color="var(--primary)" :opacity="0.3" />
-            <ChartTooltip :render="componentToString(chartConfig, ChartTooltipContent, {
-              labelFormatter: (d: number | Date) => {
-                const i = typeof d === 'number' ? d : 0
-                return chartData[i]?.time ?? ''
-              }
-            })" />
-          </VisXYContainer>
-        </ChartContainer>
-      </CardContent>
-    </Card>
-
     <!-- Ticket Types Section -->
     <div class="space-y-4">
       <div class="flex items-center justify-between">
@@ -342,6 +330,10 @@ const calculateTicketProfit = (ticket: typeof ticketTypes.value[0]) => {
             Manage pricing, availability, and track sales for each ticket type
           </p>
         </div>
+        <Button @click="openCreateSheet" class="gap-2">
+          <Icon name="lucide:plus" class="size-4" />
+          Create Ticket
+        </Button>
       </div>
 
       <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-2">

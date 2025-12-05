@@ -2,7 +2,8 @@
 import { Button } from '@/components/ui/button'
 import type { VoteStat } from '@/components/affiliate/events/votes/VotesStatCard.vue'
 import type { VoteCategory } from '@/components/affiliate/events/votes/VoteCategoriesList.vue'
-
+import VotesChart from '~/components/affiliate/events/votes/VotesChart.vue'
+import VotesStatCard from '~/components/affiliate/events/votes/VotesStatCard.vue'
 definePageMeta({
   layout: 'affiliate',
 })
@@ -236,27 +237,15 @@ const formatCurrency = (amount: number) => {
 
 <template>
   <div class="flex flex-1 flex-col gap-6 p-4 pt-0">
-    <!-- Page Header -->
-    <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-      <div>
-        <h1 class="text-2xl font-semibold tracking-tight">Votes Overview</h1>
-        <p class="text-muted-foreground text-sm">
-          Monitor voting activity, revenue, and manage your vote categories
-        </p>
+    <div class="grid gap-2 sm:grid-cols-2">
+      <!-- Stats Grid: 2x2 -->
+      <div class="grid gap-4 sm:grid-cols-2">
+        <VotesStatCard v-for="stat in stats" :key="stat.title" :stat="stat" />
       </div>
-      <Button @click="openCreateSheet" class="gap-2">
-        <Icon name="lucide:plus" class="size-4" />
-        Create Category
-      </Button>
-    </div>
 
-    <!-- Stats Grid: 2x2 -->
-    <div class="grid gap-4 sm:grid-cols-2">
-      <AffiliateEventsVotesVotesStatCard v-for="stat in stats" :key="stat.title" :stat="stat" />
+      <!-- Votes Chart -->
+      <VotesChart :hourly-data="hourlyData" :daily-data="dailyData" :monthly-data="monthlyData" />
     </div>
-
-    <!-- Votes Chart -->
-    <AffiliateEventsVotesVotesChart :hourly-data="hourlyData" :daily-data="dailyData" :monthly-data="monthlyData" />
 
     <!-- Vote Categories Section -->
     <div class="space-y-4">
@@ -267,6 +256,10 @@ const formatCurrency = (amount: number) => {
             Manage categories and view nominee standings
           </p>
         </div>
+        <Button @click="openCreateSheet" class="gap-2">
+          <Icon name="lucide:plus" class="size-4" />
+          Create Category
+        </Button>
       </div>
 
       <AffiliateEventsVotesVoteCategoriesList :categories="categories" :currency="currency" @edit="openEditSheet"
