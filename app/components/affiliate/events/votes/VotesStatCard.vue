@@ -20,17 +20,17 @@ defineProps<{
 </script>
 
 <template>
-  <Card>
-    <CardHeader class="flex flex-row items-center justify-between pb-2">
+  <Card class="p-4">
+    <CardHeader class="flex flex-row items-center justify-between p-0 pb-2">
       <CardTitle class="text-sm font-medium text-muted-foreground">
         {{ stat.title }}
       </CardTitle>
-      <div :class="['rounded-md p-2', stat.iconBgClass]">
+      <div :class="['rounded-md p-1.5', stat.iconBgClass]">
         <Icon :name="stat.icon" :class="['size-4', stat.iconClass]" />
       </div>
     </CardHeader>
-    <CardContent>
-      <div class="text-3xl font-bold">{{ stat.value }}</div>
+    <CardContent class="p-0">
+      <div class="text-2xl font-bold">{{ stat.value }}</div>
       <p v-if="stat.subtitle" class="text-xs text-muted-foreground mt-1">
         <template v-if="stat.trend">
           <span

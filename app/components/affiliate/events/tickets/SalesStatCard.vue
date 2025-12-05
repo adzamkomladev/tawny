@@ -42,21 +42,21 @@ const getTrendIcon = (direction: 'up' | 'down' | 'neutral') => {
 </script>
 
 <template>
-  <Card>
-    <CardHeader class="flex flex-row items-center justify-between pb-2">
-      <CardTitle class="text-sm font-medium text-muted-foreground">{{ stat.title }}</CardTitle>
-      <div class="rounded-md p-2" :class="stat.iconBgClass">
-        <Icon :name="stat.icon" class="size-4" :class="stat.iconClass" />
-      </div>
-    </CardHeader>
-    <CardContent>
-      <div class="text-3xl font-bold">{{ stat.value }}</div>
-      <p class="text-xs text-muted-foreground mt-1">
-        <span v-if="stat.trend" :class="getTrendClass(stat.trend.direction)" class="font-medium">
-          {{ getTrendIcon(stat.trend.direction) }} {{ stat.trend.value }}
-        </span>
-        {{ stat.subtitle }}
-      </p>
-    </CardContent>
-  </Card>
+    <Card class="p-4">
+        <CardHeader class="flex flex-row items-center justify-between p-0 pb-2">
+            <CardTitle class="text-sm font-medium text-muted-foreground">{{ stat.title }}</CardTitle>
+            <div class="rounded-md p-1.5" :class="stat.iconBgClass">
+                <Icon :name="stat.icon" class="size-4" :class="stat.iconClass" />
+            </div>
+        </CardHeader>
+        <CardContent class="p-0">
+            <div class="text-2xl font-bold">{{ stat.value }}</div>
+            <p class="text-xs text-muted-foreground mt-1">
+                <span v-if="stat.trend" :class="getTrendClass(stat.trend.direction)" class="font-medium">
+                    {{ getTrendIcon(stat.trend.direction) }} {{ stat.trend.value }}
+                </span>
+                {{ stat.subtitle }}
+            </p>
+        </CardContent>
+    </Card>
 </template>
