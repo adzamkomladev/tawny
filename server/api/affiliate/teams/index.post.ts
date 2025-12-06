@@ -1,5 +1,6 @@
 import { inArray } from 'drizzle-orm';
 import { EmailTemplate } from '~~/types/email';
+import { EmailsPayload, Queues } from '~~/types/queues';
 import { createTeamSchema } from '~~/schemas/affiliate/teams';
 
 export default defineEventHandler(async (event) => {
@@ -88,13 +89,17 @@ export default defineEventHandler(async (event) => {
       return { team };
     });
 
+    // await invalidateCacheByPrefix('nitro:handlers:_:affiliateteams');
+
+
     const config = useRuntimeConfig();
     try {
-      await sendTemplatedEmail(
-        { name: body.adminName, email: body.adminEmail },
-        `Welcome to ${body.name} on Tix4u`,
-        EmailTemplate.TEAM_OWNER_WELCOME,
-        {
+
+      await useQueue<EmailsPayload>(Queues.Emails, event).send({
+        to: { name: body.adminName, email: body.adminEmail },
+        subject: `Welcome to ${body.name} on Tix4u`,
+        templateId: EmailTemplate.TEAM_OWNER_WELCOME,
+        data: {
           affiliateName: user.name || 'Affiliate',
           name: body.adminName,
           teamName: body.name,
@@ -102,7 +107,7 @@ export default defineEventHandler(async (event) => {
           password: plainPassword,
           loginUrl: `${config.public.appUrl}/login`,
         }
-      );
+      });
     } catch (emailError) {
       console.error('Failed to send welcome email:', emailError);
     }

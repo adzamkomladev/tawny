@@ -3,7 +3,7 @@ import { EventInfo, TeamData } from '~~/types/affiliate/teams';
 import { listTeamsQuerySchema } from '~~/schemas/affiliate/teams';
 
 
-export default defineCachedEventHandler(
+export default defineEventHandler(
   async (event) => {
     const { page, size, search } = await getValidatedQuery(event, listTeamsQuerySchema.parse);
     
@@ -93,18 +93,18 @@ export default defineCachedEventHandler(
       });
     }
   },
-  {
-    maxAge: 60 * 60, // Cache for 1 hour (3600 seconds)
-    swr: true, // Stale-while-revalidate
-    getKey: (event) => {
-      const { user } = getCurrentAuth(event) || {};
-      const query = getQuery(event);
-      const page = query.page || '1';
-      const size = query.size || '10';
-      const search = query.search || '';
-      return `affiliate-teams:${user?.id || 'anon'}:${page}:${size}:${search}`;
-    },
-  }
+  // {
+  //   maxAge: 60 * 60, // Cache for 1 hour (3600 seconds)
+  //   swr: true, // Stale-while-revalidate
+  //   getKey: (event) => {
+  //     const { user } = getCurrentAuth(event) || {};
+  //     const query = getQuery(event);
+  //     const page = query.page || '1';
+  //     const size = query.size || '10';
+  //     const search = query.search || '';
+  //     return `affiliate-teams:${user?.id || 'anon'}:${page}:${size}:${search}`;
+  //   },
+  // }
 );
 
 

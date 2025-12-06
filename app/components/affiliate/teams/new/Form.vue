@@ -121,7 +121,7 @@ const onSubmit = handleSubmit(async (payload) => {
     });
 
     resetComposer();
-    navigateTo('/affiliate/teams');
+    navigateTo('/affiliate/portfolios');
   } catch (error) {
     console.error('Failed to create team:', error);
     toast.error('Failed to create team', {
